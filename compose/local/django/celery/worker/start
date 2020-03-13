@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -o errexit
+set -o nounset
+
+
+celery -A nomad_auto_advert.taskapp worker -l INFO

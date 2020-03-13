@@ -1,0 +1,29 @@
+[
+  {
+    "model": "microservices.service",
+    "pk": 1,
+    "fields": {
+      "name": "caps",
+      "url": "http://192.168.182.168:5678",
+      "host": "caps"
+    }
+  },
+  {
+    "model": "microservices.service",
+    "pk": 2,
+    "fields": {
+      "name": "shop",
+      "url": "http://192.168.182.168:5678",
+      "host": "shop"
+    }
+  },
+  {
+    "model": "microservices.service",
+    "pk": 3,
+    "fields": {
+      "name": "garage",
+      "url": "http://192.168.182.168:5678",
+      "host": "garage"
+    }
+  }
+]

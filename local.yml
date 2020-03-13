@@ -1,0 +1,89 @@
+version: '3'
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  django: &django
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: caps_local_django
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.local/.postgres
+    ports:
+      - "8100:8000"
+    command: /start
+    networks:
+      masternet:
+        aliases:
+          - nomad_auto_advert
+      db:
+      cache:
+      app:
+    labels:
+      com.docker.lb.hosts: nomad_auto_advert
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/test/postgres/Dockerfile
+    image: caps_test_postgres
+    volumes:
+      - local_postgres_data:/var/lib/postgresql/data
+      - local_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.local/.postgres
+    networks:
+      - db
+
+#  mailhog:
+#    image: mailhog/mailhog:v1.0.0
+#    ports:
+#      - "8025:8025"
+#    networks:
+#      - app
+
+  redis:
+    image: redis:3.2
+    networks:
+      - cache
+
+  celeryworker:
+    <<: *django
+    image: caps_local_celeryworker
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django
+    image: caps_local_celerybeat
+    depends_on:
+      - redis
+      - postgres
+    ports: []
+    command: /start-celerybeat
+
+  flower:
+    <<: *django
+    image: caps_local_flower
+    ports:
+      - "5555:5555"
+    command: /start-flower
+
+
+networks:
+  masternet:
+    external: true
+  app: {}
+  db: {}
+  cache: {}

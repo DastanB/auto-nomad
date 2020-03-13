@@ -1,0 +1,29 @@
+[
+  {
+    "model": "microservices.service",
+    "pk": 1,
+    "fields": {
+      "name": "caps",
+      "url": "http://caps:8000",
+      "host": "caps"
+    }
+  },
+  {
+    "model": "microservices.service",
+    "pk": 2,
+    "fields": {
+      "name": "shop",
+      "url": "http://shop:8000",
+      "host": "shop"
+    }
+  },
+  {
+    "model": "microservices.service",
+    "pk": 3,
+    "fields": {
+      "name": "garage",
+      "url": "http://garage:8000",
+      "host": "garage"
+    }
+  }
+]

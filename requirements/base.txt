@@ -1,0 +1,31 @@
+pytz==2019.1  # https://github.com/stub42/pytz
+python-slugify==3.0.2  # https://github.com/un33k/python-slugify
+Pillow==6.0.0  # https://github.com/python-pillow/Pillow
+argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
+whitenoise==4.1.2  # https://github.com/evansd/whitenoise
+redis==3.2.1  # https://github.com/antirez/redis
+celery==4.3.0  # pyup: < 5.0  # https://github.com/celery/celery
+flower==0.9.3  # https://github.com/mher/flower
+sentry-sdk==0.7.14  # https://github.com/getsentry/sentry-python
+python-logstash==0.4.6
+xmltodict==0.12.0
+
+# Django
+# ------------------------------------------------------------------------------
+django==2.0.13  # pyup: < 2.1  # https://www.djangoproject.com/
+django-environ==0.4.5  # https://github.com/joke2k/django-environ
+django-model-utils==3.1.2  # https://github.com/jazzband/django-model-utils
+django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
+django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
+django-redis==4.10.0  # https://github.com/niwinz/django-redis
+django-filter==2.1.0
+django-cors-headers==3.0.2
+django-storages[boto3]==1.7.1  # https://github.com/jschneier/django-storages
+django-reversion==3.0.4 # https://django-reversion.readthedocs.io/en/stable/api.html
+
+# Django REST Framework
+djangorestframework==3.9.3  # https://github.com/encode/django-rest-framework
+coreapi==2.3.3  # https://github.com/core-api/python-client
+djangorestframework-jwt==1.11.0
+django-rest-swagger==2.2.0
+drf-yasg==1.16.0

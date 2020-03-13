@@ -1,0 +1,118 @@
+version: '3.7'
+
+volumes:
+  caps_postgres_data:
+    external: true
+  caps_postgres_data_backups:
+    external: true
+  caps_redis:
+    external: true
+
+# Here some extensions
+x-django_base: &django_base
+  build:
+    context: .
+    dockerfile: ./compose/production/django/Dockerfile
+  image: "${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/django:${CI_COMMIT_SHA}"
+  depends_on:
+    - postgres
+    - redis
+  env_file:
+    - ./.envs/.prod/.django
+    - ./.envs/.prod/.postgres
+  command: /start
+  networks:
+    - masternet
+    - db
+    - broker
+
+x-django_deploy_base: &django_deploy_base
+  placement:
+    constraints: [node.hostname == mega]
+
+x-django_deploy_replicas: &django_deploy_replicas
+  replicas: 2
+
+services:
+  django:
+    <<: *django_base
+    deploy:
+      <<: *django_deploy_base
+      <<: *django_deploy_replicas
+      labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.nomad_auto_advert-insecure.rule=Host(`nomad_auto_advert.api.auto-nomad.kz`)
+      - traefik.http.routers.nomad_auto_advert-insecure.entrypoints=web
+      - traefik.http.routers.nomad_auto_advert-insecure.middlewares=redirect-to-https@docker
+      - traefik.http.routers.nomad_auto_advert-secure.entrypoints=websecure
+      - traefik.http.routers.nomad_auto_advert-secure.rule=Host(`nomad_auto_advert.api.auto-nomad.kz`)
+      - traefik.http.routers.nomad_auto_advert-secure.tls.certResolver=mytlschallenge
+      - traefik.http.routers.nomad_auto_advert-secure.tls.domains=nomad_auto_advert.api.auto-nomad.kz
+      - traefik.http.routers.nomad_auto_advert-microservices.rule=Host(`nomad_auto_advert`)
+      - traefik.http.routers.nomad_auto_advert-microservices.entrypoints=microservices
+      - traefik.http.services.nomad_auto_advert.loadbalancer.server.port=5000
+      - traefik.http.services.nomad_auto_advert.loadBalancer.healthCheck.path=/api/microservices/health-check/
+      - traefik.http.services.nomad_auto_advert.loadBalancer.healthCheck.interval=1s
+      - traefik.http.services.nomad_auto_advert.loadBalancer.healthCheck.timeout=1s
+      - traefik.http.services.nomad_auto_advert.loadBalancer.healthCheck.scheme=http
+
+  postgres:
+    build:
+      context: .
+      dockerfile: ./compose/production/postgres/Dockerfile
+    image: "${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/postgres:${CI_COMMIT_SHA}"
+    volumes:
+      - caps_postgres_data:/var/lib/postgresql/data
+      - caps_postgres_data_backups:/backups
+    env_file:
+      - ./.envs/.prod/.postgres
+    networks:
+      - db
+    deploy:
+      <<: *django_deploy_base
+
+  redis:
+    image: redis:3.2
+    command: redis-server --appendonly yes
+    volumes:
+      - caps_redis:/data
+    networks:
+      - broker
+    deploy:
+      <<: *django_deploy_base
+
+  celeryworker:
+    <<: *django_base
+    deploy:
+      <<: *django_deploy_base
+    command: /start-celeryworker
+
+  celerybeat:
+    <<: *django_base
+    deploy:
+      <<: *django_deploy_base
+    command: /start-celerybeat
+
+  flower:
+    <<: *django_base
+    deploy:
+      <<: *django_deploy_base
+      labels:
+      - traefik.enable=true
+      - traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https
+      - traefik.http.routers.flower-nomad_auto_advert-insecure.rule=Host(`flower.nomad_auto_advert.api.auto-nomad.kz`)
+      - traefik.http.routers.flower-nomad_auto_advert-insecure.entrypoints=web
+      - traefik.http.routers.flower-nomad_auto_advert-insecure.middlewares=redirect-to-https@docker
+      - traefik.http.routers.flower-nomad_auto_advert-secure.entrypoints=websecure
+      - traefik.http.routers.flower-nomad_auto_advert-secure.rule=Host(`flower.nomad_auto_advert.api.auto-nomad.kz`)
+      - traefik.http.routers.flower-nomad_auto_advert-secure.tls.certResolver=mytlschallenge
+      - traefik.http.routers.flower-nomad_auto_advert-secure.tls.domains=flower.nomad_auto_advert.api.auto-nomad.kz
+      - traefik.http.services.flower-nomad_auto_advert.loadbalancer.server.port=5555
+    command: /start-flower
+
+networks:
+  db:
+  masternet:
+    external: true
+  broker:
