@@ -6,7 +6,10 @@ IPYTHONDIR=/app/.ipython
 DJANGO_SETTINGS_MODULE=config.settings.test
 DJANGO_SECRET_KEY=KcBTv0iP7KmzU4ej4mvTZBRiBqS72zED3u4ALK5Z3H8J89sVG3mBQkX7s5pTP4AA
 DJANGO_ADMIN_URL=8Pu201KSanEtSbMLIPKuR43uSs8TbEUI/
-DJANGO_ALLOWED_HOSTS=.auto-nomad.kz,caps
+#DJANGO_ALLOWED_HOSTS=.auto-nomad.kz,advert
+DJANGO_ALLOWED_HOSTS=*
+MODE=test
+TRAEFIK_URL=192.168.100.72
 
 # Security
 # ------------------------------------------------------------------------------
@@ -57,3 +60,4 @@ AWS_DEFAULT_ACL=public-read
 
 # Microservices
 COMMON_API_KEY=85cb29a1-c630-496b-949d-8f9a1b8b7306
+SELF_SERVICE_NAME=garage

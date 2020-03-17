@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
 LOCAL_APPS = [
     "nomad_auto_advert.users.apps.UsersAppConfig",
     "nomad_auto_advert.microservices.apps.MicroservicesConfig",
+    'nomad_auto_advert.advert.apps.AdvertConfig',
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
