@@ -19,6 +19,8 @@ urlpatterns = [
     path("api/", include(api_url_patterns)),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
 if settings.DEBUG:
     if "debug_toolbar" in settings.INSTALLED_APPS:
         from drf_yasg.views import get_schema_view

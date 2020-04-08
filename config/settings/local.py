@@ -47,10 +47,16 @@ EMAIL_HOST_USER = 'noreply@auto-nomad.kz'
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'Noreply <noreply@auto-nomad.kz>'
 
+MIDDLEWARE += [
+    'silk.middleware.SilkyMiddleware',
+]
+
 
 INSTALLED_APPS += [
-    "drf_yasg"
+    "drf_yasg",
+    'silk'
 ]
+
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
