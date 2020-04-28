@@ -10,8 +10,8 @@ class Command(BaseCommand):
             'load_car_generation',
             'load_car_serie',
             'load_car_modifications',
-            'load_car_equipments',
-            # 'load_car_options',
+            # 'load_car_equipments',
+            'load_car_options',
             'load_colors',
         ]
 
