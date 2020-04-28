@@ -10,6 +10,7 @@ DJANGO_ADMIN_URL=8Pu201KSanEtSbMLIPKuR43uSs8TbEUI/
 DJANGO_ALLOWED_HOSTS=*
 MODE=test
 TRAEFIK_URL=192.168.100.72
+CARS_CSV_DIR=/app/files/csv
 
 # Security
 # ------------------------------------------------------------------------------

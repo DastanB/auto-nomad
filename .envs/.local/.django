@@ -6,6 +6,7 @@ MODE=local
 DJANGO_SECRET_KEY=KcBTv0iP7KmzU4ej4mvTZBRiBqS72zED3u4ALK5Z3H8J89sVG3mBQkX7s5pTP4AA
 DJANGO_SETTINGS_MODULE=config.settings.local
 DJANGO_ADMIN_URL=admin/
+CARS_CSV_DIR=/app/files/csv
 
 # Redis
 # ------------------------------------------------------------------------------

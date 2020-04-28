@@ -9,7 +9,8 @@ from rest_framework import permissions
 api_url_patterns = [
     path("users/", include("nomad_auto_advert.users.urls", namespace="users")),
     path("microservices/", include("nomad_auto_advert.microservices.urls", namespace="microservcies")),
-    path(r'advert/', include('nomad_auto_advert.advert.urls', namespace='advert'))
+    path(r'advert/', include('nomad_auto_advert.advert.urls', namespace='advert')),
+    path(r"cars/", include('nomad_auto_advert.cars.urls', namespace='cars')),
 ]
 
 urlpatterns = [
