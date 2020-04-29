@@ -25,11 +25,11 @@ class AdvertSearchFilter(filters.FilterSet):
     generation_ext = filters.NumberFilter(method='filter_by_generation')
     year_begin = filters.CharFilter(method='year_begin_gte')
     year_end = filters.CharFilter(method='year_end_lte')
-    price_begin = filters.CharFilter()
-    price_end = filters.CharFilter()
-    transmission = filters.CharFilter()  # Коробка передач
-    body = filters.CharFilter()  # Кузов
-    engine = filters.CharFilter()  # Двигатель
+    price_begin = filters.CharFilter(method='price_gte')
+    price_end = filters.CharFilter(method='price_lte')
+    transmission = filters.CharFilter(method='filter_by_transmission_type')  # Коробка передач
+    body = filters.CharFilter(method='filter_by_car_body_type')  # Кузов
+    engine = filters.CharFilter(method='filter_by_engine_type')  # Двигатель
     engine_volume_begin = filters.CharFilter()  # Объем двигателя
     engine_volume_end = filters.CharFilter()  # Объем двигателя
     drive_type = filters.CharFilter()  # Привод машины
@@ -68,4 +68,27 @@ class AdvertSearchFilter(filters.FilterSet):
             return queryset.filter(car__car_generation__year_end__lte=year)
         pass
 
-    # @staticmethod
+    @staticmethod
+    def price_gte(queryset, value, *args, **kwargs):
+        price = args[0]
+        return queryset.filter(price__gte=price)
+
+    @staticmethod
+    def price_lte(queryset, value, *args, **kwargs):
+        price = args[0]
+        return queryset.filter(price__lte=price)
+
+    @staticmethod
+    def filter_by_transmission_type(queryset, value, *args, **kwargs):
+        transmission_type = args[0]
+        return queryset.filter(car__car_modification__car_characteristic_values__transmission_type=transmission_type)
+
+    @staticmethod
+    def filter_by_car_body_type(queryset, value, *args, **kwargs):
+        body = args[0]
+        return queryset.filter(car__car_modification__car_characteristic_values__body_type=body)
+
+    @staticmethod
+    def filter_by_engine_type(queryset, value, *args, **kwargs):
+        engine = args[0]
+        return queryset.filter(car__car_modification__car_characteristic_values__engine_type=engine)

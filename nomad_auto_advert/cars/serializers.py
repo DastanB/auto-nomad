@@ -88,9 +88,21 @@ class CarSerializer(serializers.ModelSerializer):
     car_generation = CarGenerationSerializer()
     car_serie = CarSerieSerializer()
     car_modification = CarModificationSerializer()
-    car_equipment = CarEquipmentSerializer()
     car_color = CarColorSerializer()
 
     class Meta:
         model = Car
         fields = "__all__"
+
+
+class CarDetailSerializer(CarSerializer):
+    car_equipment = CarEquipmentSerializer()
+    car_characteristics = serializers.SerializerMethodField()
+
+    def get_car_characteristics(self, obj):
+        if not obj.car_modification:
+            return
+        modification_id = obj.car_modification.id
+        car_characteristics = CarCharacteristicValue.objects.filter(car_modification_id=modification_id)
+        return CarCharacteristicValueSerializer(car_characteristics, many=True).data
+

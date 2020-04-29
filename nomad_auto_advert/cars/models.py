@@ -115,6 +115,14 @@ class CarCharacteristicValue(models.Model):
     car_modification = models.ForeignKey(CarModification, related_name='car_characteristic_values',
                                          on_delete=models.CASCADE)
 
+    # fields for advert search filters
+    transmission_type = models.ForeignKey('characteristics.TransmissionType', related_name='characteristics',
+                                          on_delete=models.SET_NULL, null=True)
+    body_type = models.ForeignKey('characteristics.CarBodyType', related_name='characteristics',
+                                  on_delete=models.SET_NULL, null=True)
+    engine_type = models.ForeignKey('characteristics.EngineType', related_name='characteristics',
+                                    on_delete=models.SET_NULL, null=True)
+
     def __str__(self):
         return f"{self.value} {self.unit}"
 

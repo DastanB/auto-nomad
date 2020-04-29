@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets
+from rest_framework import generics, viewsets, exceptions
 from rest_framework.permissions import AllowAny
 from nomad_auto_advert.cars.filters import CarMarkFilter, CarModelFilter, CarGenerationFilter, CarSerieFilter, \
     CarModificationFilter, CarCharacteristicFilter, CarCharacteristicValueFilter, CarOptionValueFilter, CarOptionFilter, \
@@ -8,7 +8,7 @@ from nomad_auto_advert.cars.models import CarType, CarMark, CarModel, CarGenerat
 from nomad_auto_advert.cars.serializers import CarTypeSerializer, CarMarkSerializer, CarModelSerializer, \
     CarGenerationSerializer, CarSerieSerializer, CarModificationSerializer, CarCharacteristicSerializer, \
     CarCharacteristicValueSerializer, CarOptionSerializer, CarOptionValueSerializer, CarEquipmentSerializer, \
-    CarSerializer
+    CarSerializer, CarDetailSerializer
 from django_filters import rest_framework as filters
 
 
@@ -89,3 +89,13 @@ class CarEquipmentView(CarView):
 class CarViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CarSerializer
     queryset = Car.objects.all()
+
+
+class CarDetailView(generics.RetrieveAPIView):
+    serializer_class = CarDetailSerializer
+
+    def get_object(self):
+        car = Car.objects.filter(id=self.kwargs.get('id'))
+        if car.exists():
+            return car.first()
+        raise exceptions.NotFound('Car with given id not found')
