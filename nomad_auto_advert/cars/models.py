@@ -144,6 +144,8 @@ class Car(models.Model):
     car_equipment = models.ForeignKey('CarEquipment', related_name='cars', on_delete=models.SET_NULL, null=True)
     car_color = models.ForeignKey('CarColor', related_name='cars', on_delete=models.SET_NULL, null=True)
 
+    mileage = models.PositiveIntegerField(null=True)
+
     def create_car(self, data):
         if data:
             car_type = CarType.objects.filter(ext=data.get('car_type').get('ext'))
@@ -170,6 +172,7 @@ class Car(models.Model):
             car_color = CarColor.objects.filter(name__icontains=data.get('car_color').get('name'))
             if car_color.exists():
                 self.car_color = car_color.first()
+            self.mileage = data.get('mileage')
 
             self.save()
             return self

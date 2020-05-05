@@ -47,14 +47,14 @@ EMAIL_HOST_USER = 'noreply@auto-nomad.kz'
 EMAIL_USE_TLS = False
 DEFAULT_FROM_EMAIL = 'Noreply <noreply@auto-nomad.kz>'
 
-MIDDLEWARE += [
-    'silk.middleware.SilkyMiddleware',
-]
+# MIDDLEWARE += [
+#     'silk.middleware.SilkyMiddleware',
+# ]
 
 
 INSTALLED_APPS += [
     "drf_yasg",
-    'silk'
+    # 'silk'
 ]
 
 # django-debug-toolbar

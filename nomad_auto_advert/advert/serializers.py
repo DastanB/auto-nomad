@@ -9,7 +9,10 @@ from nomad_auto_advert.utils.serializers import ChoiceValueDisplayField
 class AdvertSerializer(serializers.ModelSerializer):
     car_condition_type = ChoiceValueDisplayField()
     rule_type = ChoiceValueDisplayField()
-    car = CarSerializer(read_only=True)
+    car = serializers.SerializerMethodField(read_only=True)
+
+    def get_car(self, obj):
+        return CarSerializer(obj.car).data
 
     class Meta:
         model = Advert
