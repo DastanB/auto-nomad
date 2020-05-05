@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from nomad_auto_advert.characteristics.models import TransmissionType, CarBodyType, EngineType
+from nomad_auto_advert.characteristics.models import TransmissionType, CarBodyType, EngineType, DriveType
 
 
 class TransmissionTypeSerializer(serializers.ModelSerializer):
@@ -17,4 +17,10 @@ class CarBodyTypeSerializer(serializers.ModelSerializer):
 class EngineTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = EngineType
+        fields = "__all__"
+
+
+class DriveTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DriveType
         fields = "__all__"
