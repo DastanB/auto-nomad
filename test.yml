@@ -43,7 +43,7 @@ services:
         - "traefik.enable=true"
         - "traefik.port=5000"
         - "traefik.docker.network=masternet"
-        - "traefik.frontend.rule=Host:nomad_auto_advert.test.auto-nomad.kz,nomad_auto_advert"
+        - "traefik.frontend.rule=Host:advert.test.auto-nomad.kz,advert"
         - "traefik.backend=nomad_auto_advert"
         - "traefik.backend.healthcheck.path=/api/microservices/health-check/"
         - "traefik.backend.healthcheck.interval=1s"

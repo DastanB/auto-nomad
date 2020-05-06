@@ -14,19 +14,19 @@ variables:
   IMAGE_DJANGO: ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/django
   IMAGE_POSTGRES: ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/postgres
 
-prod-build:
-  stage: build
-  script:
-    - docker build -f compose/production/django/Dockerfile -t ${IMAGE_DJANGO}:${CI_COMMIT_SHA} .
-    - docker tag ${IMAGE_DJANGO}:${CI_COMMIT_SHA} ${IMAGE_DJANGO}:latest
-    - docker push ${IMAGE_DJANGO}:${CI_COMMIT_SHA}
-    - docker push ${IMAGE_DJANGO}:latest
-    - docker build -f compose/production/postgres/Dockerfile -t ${IMAGE_POSTGRES}:${CI_COMMIT_SHA} .
-    - docker push ${IMAGE_POSTGRES}:${CI_COMMIT_SHA}
-    - docker tag ${IMAGE_POSTGRES}:${CI_COMMIT_SHA} ${IMAGE_POSTGRES}:latest
-    - docker push ${IMAGE_POSTGRES}:latest
-  only:
-    - release
+#prod-build:
+#  stage: build
+#  script:
+#    - docker build -f compose/production/django/Dockerfile -t ${IMAGE_DJANGO}:${CI_COMMIT_SHA} .
+#    - docker tag ${IMAGE_DJANGO}:${CI_COMMIT_SHA} ${IMAGE_DJANGO}:latest
+#    - docker push ${IMAGE_DJANGO}:${CI_COMMIT_SHA}
+#    - docker push ${IMAGE_DJANGO}:latest
+#    - docker build -f compose/production/postgres/Dockerfile -t ${IMAGE_POSTGRES}:${CI_COMMIT_SHA} .
+#    - docker push ${IMAGE_POSTGRES}:${CI_COMMIT_SHA}
+#    - docker tag ${IMAGE_POSTGRES}:${CI_COMMIT_SHA} ${IMAGE_POSTGRES}:latest
+#    - docker push ${IMAGE_POSTGRES}:latest
+#  only:
+#    - release
 
 test-build:
   stage: build
@@ -51,14 +51,14 @@ test-deploy:
     - test
 
 
-prod-deploy:
-  image: buffalobill571/alpine-ssh-pip-fabric:v0.1.0
-  stage: deploy
-  script:
-    - fab prod deploy
-  before_script:
-    - eval $(ssh-agent -s)
-    - mkdir -p ~/.ssh
-    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
-  only:
-    - release
+#prod-deploy:
+#  image: buffalobill571/alpine-ssh-pip-fabric:v0.1.0
+#  stage: deploy
+#  script:
+#    - fab prod deploy
+#  before_script:
+#    - eval $(ssh-agent -s)
+#    - mkdir -p ~/.ssh
+#    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+#  only:
+#    - release
