@@ -22,8 +22,7 @@ class Migration(migrations.Migration):
                 ('car_model', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cars', to='cars.CarModel')),
                 ('car_modification', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cars', to='cars.CarModification')),
                 ('car_serie', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cars', to='cars.CarSerie')),
-                ('car_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cars', to='cars.CarType')),
-                ('profile', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cars', to='users.Profile')),
+                ('car_type', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='cars', to='cars.CarType'))
             ],
         ),
         migrations.CreateModel(
