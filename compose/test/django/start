@@ -8,6 +8,7 @@ find . -type f -name "*.py[co]" -delete
 find . -type d -name "__pycache__" -delete
 
 python /app/manage.py collectstatic --noinput
+python /app/manage.py migrate users
 python /app/manage.py migrate
 python /app/manage.py load_services
 python /app/manage.py load_api_keys
