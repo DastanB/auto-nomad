@@ -107,7 +107,7 @@ services:
         - "traefik.enable=true"
         - "traefik.port=5555"
         - "traefik.docker.network=masternet"
-        - "traefik.frontend.rule=Host:flower.nomad_auto_advert.test.auto-nomad.kz"
+        - "traefik.frontend.rule=Host:flower.advert.test.auto-nomad.kz"
     command: /start-flower
 
 networks:
