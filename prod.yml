@@ -3,9 +3,9 @@ version: '3.7'
 volumes:
   caps_postgres_data:
     external: true
-  caps_postgres_data_backups:
+  advert_postgres_data_backups:
     external: true
-  caps_redis:
+  advert_redis:
     external: true
 
 # Here some extensions
@@ -63,8 +63,8 @@ services:
       dockerfile: ./compose/production/postgres/Dockerfile
     image: "${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/postgres:${CI_COMMIT_SHA}"
     volumes:
-      - caps_postgres_data:/var/lib/postgresql/data
-      - caps_postgres_data_backups:/backups
+      - advert_postgres_data:/var/lib/postgresql/data
+      - advert_postgres_data_backups:/backups
     env_file:
       - ./.envs/.prod/.postgres
     networks:
@@ -76,7 +76,7 @@ services:
     image: redis:3.2
     command: redis-server --appendonly yes
     volumes:
-      - caps_redis:/data
+      - advert_redis:/data
     networks:
       - broker
     deploy:
