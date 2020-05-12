@@ -122,6 +122,8 @@ class CarCharacteristicValue(models.Model):
                                   on_delete=models.SET_NULL, null=True)
     engine_type = models.ForeignKey('characteristics.EngineType', related_name='characteristics',
                                     on_delete=models.SET_NULL, null=True)
+    drive_type = models.ForeignKey('characteristics.DriveType', related_name='characteristics',
+                                    on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return f"{self.value} {self.unit}"

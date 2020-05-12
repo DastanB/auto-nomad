@@ -32,10 +32,10 @@ class AdvertSearchFilter(filters.FilterSet):
     engine = filters.CharFilter(method='filter_by_engine_type')  # Двигатель
     engine_volume_begin = filters.CharFilter()  # Объем двигателя
     engine_volume_end = filters.CharFilter()  # Объем двигателя
-    drive_type = filters.CharFilter()  # Привод машины
+    drive_type = filters.CharFilter(method='drive_type_filter')  # Привод машины
     power = filters.CharFilter()  # Мощность л.с.
-    mileage_begin = filters.CharFilter()  # Пробег
-    mileage_end = filters.CharFilter()  # Пробег
+    mileage_begin = filters.CharFilter(method='mileage_begin_gte')  # Пробег
+    mileage_end = filters.CharFilter(method='mileage_end_lte')  # Пробег
 
     @staticmethod
     def filter_by_mark(queryset, value, *args, **kwargs):
@@ -92,3 +92,19 @@ class AdvertSearchFilter(filters.FilterSet):
     def filter_by_engine_type(queryset, value, *args, **kwargs):
         engine = args[0]
         return queryset.filter(car__car_modification__car_characteristic_values__engine_type=engine)
+
+    @staticmethod
+    def mileage_begin_gte(queryset, value, *args, **kwargs):
+        mileage = args[0]
+        return queryset.filter(car__mileage__gte=mileage)
+
+    @staticmethod
+    def mileage_end_lte(queryset, value, *args, **kwargs):
+        mileage = args[0]
+        return queryset.filter(car__mileage__lte=mileage)
+
+    @staticmethod
+    def drive_type_filter(queryset, value, *args, **kwargs):
+        drive = args[0]
+        return queryset.filter(car__car_modification__car_characteristic_values__drive_type=drive)
+
