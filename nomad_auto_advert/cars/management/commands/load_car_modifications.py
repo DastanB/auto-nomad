@@ -1,33 +1,29 @@
-from django.core.exceptions import ImproperlyConfigured, MultipleObjectsReturned
 from django.core.management import BaseCommand
-from nomad_auto_advert.cars.models import CarSerie, CarModification
-import os, sys
-import csv
+from nomad_auto_advert.cars.management.commands.utils.csv_abstract_loader import CSVAbstractLoader
+from nomad_auto_advert.cars.models import CarModification
+
+
+class CarModificationDataLoader(CSVAbstractLoader):
+    FILE_PATH = '/app/files/car_modification.csv'
+    MODEL = CarModification
+
+    @classmethod
+    def normalize_row(cls, row) -> dict:
+        name = row.get("'name'")[1:-1]
+        ext = row.get("'id_car_modification'")[1:-1]
+
+        car_serie_ext = row.get("'id_car_serie'")[1:-1]
+        if not car_serie_ext.isdigit():
+            car_serie_ext = None
+
+        result = {
+            'name': name,
+            'car_serie_ext': car_serie_ext,
+            'ext': ext
+        }
+        return result
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        cars_csv_dir = os.environ.get('CARS_CSV_DIR')
-        if not cars_csv_dir:
-            raise ImproperlyConfigured('Please set `CARS_CSV_DIR` env variable')
-
-        car_type_csv = '/app/files/car_modification.csv'
-
-        car_type_filepath = os.path.join(cars_csv_dir, car_type_csv)
-
-        count = 0
-
-        with open(car_type_filepath, 'r') as car_type_file:
-            r = csv.DictReader(car_type_file, quotechar="'")
-            for i, row in enumerate(r, start=1):
-                try:
-                    obj, created = CarModification.objects.get_or_create(
-                        ext=row['id_car_modification'], name=row['name'],
-                        car_serie_id=CarSerie.objects.get(ext=row['id_car_serie']).id
-                    )
-                except MultipleObjectsReturned:
-                    self.stdout.write(f'{row}')
-                if created:
-                    count += 1
-                    sys.stdout.write(f'Created: {count}\r')
-        self.stdout.write('Created {} objects'.format(count))
+        CarModificationDataLoader.load()

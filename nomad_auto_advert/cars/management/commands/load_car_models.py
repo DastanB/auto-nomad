@@ -1,33 +1,27 @@
-import sys
-
-from django.core.exceptions import ImproperlyConfigured
 from django.core.management import BaseCommand
-from nomad_auto_advert.cars.models import CarMark, CarModel
-import os
-import csv
+from nomad_auto_advert.cars.management.commands.utils.csv_abstract_loader import CSVAbstractLoader
+from nomad_auto_advert.cars.models import CarModel
+
+
+class CarModelDataLoader(CSVAbstractLoader):
+    FILE_PATH = '/app/files/car_model.csv'
+    MODEL = CarModel
+
+    @classmethod
+    def normalize_row(cls, row) -> dict:
+        name = row.get("'name'")[1:-1]
+        name_ru = row.get("'name_rus'")[1:-1]
+        ext = row.get("'id_car_model'")[1:-1]
+        car_mark_ext = row.get("'id_car_mark'")[1:-1]
+        result = {
+            'name': name,
+            'name_ru': name_ru,
+            'ext': ext,
+            'car_mark_ext': car_mark_ext
+        }
+        return result
 
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        cars_csv_dir = os.environ.get('CARS_CSV_DIR')
-
-        if not cars_csv_dir:
-            raise ImproperlyConfigured('Please set `CARS_CSV_DIR` env variable')
-
-        car_type_csv = '/app/files/car_model.csv'
-
-        car_type_filepath = os.path.join(cars_csv_dir, car_type_csv)
-
-        count = 0
-
-        with open(car_type_filepath, 'r') as car_type_file:
-            r = csv.DictReader(car_type_file, quotechar="'")
-            for row in r:
-                obj, created = CarModel.objects.get_or_create(
-                    ext=row['id_car_model'], name=row['name'], name_ru=row['name_rus'],
-                    car_mark_id=CarMark.objects.get(ext=row['id_car_mark']).id,
-                )
-                if created:
-                    count += 1
-                    sys.stdout.write(f'Created: {count}\r')
-        self.stdout.write('Created {} objects'.format(count))
+        CarModelDataLoader.load()

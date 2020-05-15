@@ -10,8 +10,11 @@ class Command(BaseCommand):
             'load_car_generation',
             'load_car_serie',
             'load_car_modifications',
-            # 'load_car_equipments',
-            'load_car_options'
+            'load_car_options',
+            'load_car_equipments',
+            'load_car_option_values',
+            'load_car_characteristics',
+            'load_car_characteristic_values'
         ]
 
         for c in commands:

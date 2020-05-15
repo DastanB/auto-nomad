@@ -12,8 +12,7 @@ class CSVAbstractLoader:
     def load(cls):
         objects_pool = []
         row_index = 0
-        # model_attributes = list([field.name for field in cls.MODEL._meta.fields])
-        csv.field_size_limit(100000000)
+        csv.field_size_limit(1000000000)
         data_rows = cls.get_rows()
         column_names = next(data_rows)
         for data_row in data_rows:
@@ -26,22 +25,14 @@ class CSVAbstractLoader:
                 objects_pool.append(created_object)
 
             if len(objects_pool) > cls.POOL_LIMIT:
-                bulk_result = cls.MODEL.objects.bulk_create(objects_pool, ignore_conflicts=True)
-                if bulk_result is not None:
-                    sys.stdout.write(f"[!] {len(bulk_result)} objects created during bulk-creation\r")
-                else:
-                    sys.stdout.write(f"[!] ZERO objects created during bulk-creation\r")
+                cls.MODEL.objects.bulk_create(objects_pool, ignore_conflicts=True)
 
                 objects_pool.clear()
             row_index += 1
             sys.stdout.write(f"[+] Row index is {row_index} and objects in pool {len(objects_pool)}\r")
 
         if len(objects_pool) > 0:
-            bulk_result = cls.MODEL.objects.bulk_create(objects_pool, ignore_conflicts=True)
-            if bulk_result is not None:
-                sys.stdout.write(f"[!] {len(bulk_result)} objects created during bulk-creation\r")
-            else:
-                sys.stdout.write(f"[!] ZERO objects created during bulk-creation\r")
+            cls.MODEL.objects.bulk_create(objects_pool, ignore_conflicts=True)
 
     @classmethod
     def create_object(cls, row):
@@ -64,7 +55,6 @@ class CSVAbstractLoader:
         #     data[attribute] = row.get(attribute)
 
         return cls.MODEL(**data)
-
 
     @classmethod
     def normalize_row(cls, row) -> dict:

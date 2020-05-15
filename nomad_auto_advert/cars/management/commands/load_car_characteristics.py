@@ -1,16 +1,16 @@
 from django.core.management import BaseCommand
 from nomad_auto_advert.cars.management.commands.utils.csv_abstract_loader import CSVAbstractLoader
-from nomad_auto_advert.cars.models import CarOption
+from nomad_auto_advert.cars.models import CarCharacteristic
 
 
-class CarOptionDataLoader(CSVAbstractLoader):
-    FILE_PATH = '/app/files/car_option.csv'
-    MODEL = CarOption
+class CarCharacteristicDataLoader(CSVAbstractLoader):
+    FILE_PATH = '/app/files/car_characteristic.csv'
+    MODEL = CarCharacteristic
 
     @classmethod
     def normalize_row(cls, row) -> dict:
         name = row.get("'name'")[1:-1]
-        ext = row.get("'id_car_option'")[1:-1]
+        ext = row.get("'id_car_characteristic'")[1:-1]
 
         parent_ext = row.get("'id_parent'")[1:-1]
         if not parent_ext.isdigit():
@@ -26,4 +26,4 @@ class CarOptionDataLoader(CSVAbstractLoader):
 
 class Command(BaseCommand):
     def handle(self, *args, **options):
-        CarOptionDataLoader.load()
+        CarCharacteristicDataLoader.load()

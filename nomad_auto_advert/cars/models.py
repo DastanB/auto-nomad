@@ -4,7 +4,7 @@ from nomad_auto_advert.filters.models import CarBodyType
 
 
 class CarType(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):
@@ -12,117 +12,138 @@ class CarType(models.Model):
 
 
 class CarMark(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=50)
     name_ru = models.CharField(max_length=50)
 
-    car_type = models.ForeignKey(CarType, related_name='car_marks', on_delete=models.CASCADE)
+    car_type = models.ForeignKey('CarType', related_name='car_marks', on_delete=models.CASCADE, null=True, blank=True)
+    car_type_ext = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarModel(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=50)
     name_ru = models.CharField(max_length=50)
 
-    car_mark = models.ForeignKey(CarMark, related_name='car_models', on_delete=models.CASCADE)
+    car_mark = models.ForeignKey('CarMark', related_name='car_models', on_delete=models.CASCADE,
+                                 null=True, blank=True)
+    car_mark_ext = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarGeneration(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=50)
     year_begin = models.CharField(max_length=15, blank=True)
     year_end = models.CharField(max_length=15, blank=True)
 
-    car_model = models.ForeignKey(CarModel, related_name='car_generations', on_delete=models.CASCADE)
+    car_model = models.ForeignKey('CarModel', related_name='car_generations', on_delete=models.CASCADE,
+                                  null=True, blank=True)
+    car_model_ext = models.PositiveSmallIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarSerie(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=50)
 
-    car_generation = models.ForeignKey(CarGeneration, related_name='car_series', on_delete=models.CASCADE,
+    car_generation = models.ForeignKey('CarGeneration', related_name='car_series', on_delete=models.CASCADE,
                                        null=True, blank=True)
-    car_model = models.ForeignKey(CarModel, related_name='car_series', on_delete=models.CASCADE)
+    car_generation_ext = models.PositiveIntegerField(null=True, blank=True)
+    car_model = models.ForeignKey('CarModel', related_name='car_series', on_delete=models.CASCADE,
+                                  null=True, blank=True)
+    car_model_ext = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarModification(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.CharField(max_length=300)
 
-    car_serie = models.ForeignKey(CarSerie, related_name='car_modifications', on_delete=models.CASCADE)
+    car_serie = models.ForeignKey('CarSerie', related_name='car_modifications', on_delete=models.CASCADE,
+                                  null=True, blank=True)
+    car_serie_ext = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarOption(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.TextField()
+
+    parent = models.ForeignKey('self', related_name='children', on_delete=models.SET_NULL,
+                               null=True, blank=True)
+    parent_ext = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarOptionValue(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
 
-    car_option = models.ForeignKey(CarOption, related_name='car_option_values', on_delete=models.CASCADE)
-    car_equipment = models.ForeignKey('CarEquipment', related_name='car_option_values', on_delete=models.CASCADE)
+    car_option = models.ForeignKey('CarOption', related_name='car_option_values', on_delete=models.CASCADE,
+                                   null=True, blank=True)
+    car_option_ext = models.PositiveIntegerField(null=True, blank=True)
+    car_equipment = models.ForeignKey('CarEquipment', related_name='car_option_values', on_delete=models.CASCADE,
+                                      null=True, blank=True)
+    car_equipment_ext = models.PositiveIntegerField(null=True, blank=True)
 
 
 class CarEquipment(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.TextField()
 
-    car_modification = models.ForeignKey(CarModification, related_name='car_equipments', on_delete=models.CASCADE)
-    car_options = models.ManyToManyField(CarOption, blank=True, through='CarOptionValue')
+    car_modification = models.ForeignKey(CarModification, related_name='car_equipments', on_delete=models.CASCADE,
+                                         null=True, blank=True)
+    car_modification_ext = models.PositiveIntegerField(null=True, blank=True)
+    car_options = models.ManyToManyField('CarOption', blank=True, through='CarOptionValue')
 
     def __str__(self):
         return self.name
 
 
 class CarCharacteristic(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
     name = models.TextField()
 
-    parent = models.ForeignKey('self', related_name='children', on_delete=models.SET_NULL, null=True, blank=True)
+    parent = models.ForeignKey('self', related_name='children', on_delete=models.SET_NULL,
+                               null=True, blank=True)
+    parent_ext = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
 class CarCharacteristicValue(models.Model):
-    ext = models.PositiveIntegerField()
+    ext = models.PositiveIntegerField(unique=True)
 
     value = models.CharField(max_length=200)
     unit = models.CharField(max_length=200, blank=True)
 
-    car_characteristic_ext = models.PositiveIntegerField(default=0)
-    car_modification_ext = models.PositiveIntegerField(default=0)
-
     car_characteristic = models.ForeignKey(CarCharacteristic, related_name='car_characteristic_values',
-                                           on_delete=models.CASCADE)
+                                           on_delete=models.CASCADE, null=True, blank=True)
+    car_characteristic_ext = models.PositiveIntegerField(null=True, blank=True)
     car_modification = models.ForeignKey(CarModification, related_name='car_characteristic_values',
-                                         on_delete=models.CASCADE)
+                                         on_delete=models.CASCADE, null=True, blank=True)
+    car_modification_ext = models.PositiveIntegerField(null=True, blank=True)
 
     def __str__(self):
         return f"{self.value} {self.unit}"
 
 
 class CarColor(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
