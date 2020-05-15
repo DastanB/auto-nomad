@@ -1,5 +1,7 @@
 from django.db import models
 
+from nomad_auto_advert.filters.models import CarBodyType
+
 
 class CarType(models.Model):
     ext = models.PositiveIntegerField()
@@ -115,16 +117,6 @@ class CarCharacteristicValue(models.Model):
     car_modification = models.ForeignKey(CarModification, related_name='car_characteristic_values',
                                          on_delete=models.CASCADE)
 
-    # fields for advert search filters
-    transmission_type = models.ForeignKey('characteristics.TransmissionType', related_name='characteristics',
-                                          on_delete=models.SET_NULL, null=True)
-    body_type = models.ForeignKey('characteristics.CarBodyType', related_name='characteristics',
-                                  on_delete=models.SET_NULL, null=True)
-    engine_type = models.ForeignKey('characteristics.EngineType', related_name='characteristics',
-                                    on_delete=models.SET_NULL, null=True)
-    drive_type = models.ForeignKey('characteristics.DriveType', related_name='characteristics',
-                                    on_delete=models.SET_NULL, null=True)
-
     def __str__(self):
         return f"{self.value} {self.unit}"
 
@@ -134,6 +126,11 @@ class CarColor(models.Model):
 
     def __str__(self):
         return self.name
+
+
+'''
+Car Model
+'''
 
 
 class Car(models.Model):
@@ -146,7 +143,18 @@ class Car(models.Model):
     car_equipment = models.ForeignKey('CarEquipment', related_name='cars', on_delete=models.SET_NULL, null=True)
     car_color = models.ForeignKey('CarColor', related_name='cars', on_delete=models.SET_NULL, null=True)
 
+    body_type = models.ForeignKey('filters.CarBodyType', related_name='body_types',
+                                  on_delete=models.SET_NULL, null=True)
     mileage = models.PositiveIntegerField(null=True)
+    year = models.PositiveIntegerField(null=True)
+
+    def set_body_type(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=2,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            b = CarBodyType.objects.filter(name__iexact=values.first().value)
+            if b.exists():
+                self.body_type = b.first()
 
     def create_car(self, data):
         if data:
@@ -175,7 +183,11 @@ class Car(models.Model):
             if car_color.exists():
                 self.car_color = car_color.first()
             self.mileage = data.get('mileage')
+            self.set_body_type()
 
             self.save()
             return self
         print('Car info not found')
+
+    def __str__(self):
+        return f"{self.id}: {self.car_mark.name} {self.car_model.name}"

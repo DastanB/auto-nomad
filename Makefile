@@ -108,3 +108,11 @@ run-test:
 ## Runs application with prod config.
 run-prod:
 	@docker-compose -f $(PROD_CONFIG_FILE) up --build
+
+## Trying to run command. Example: 'make run-command command=command_name' | Command
+run-command:
+	@docker-compose -f $(CONFIG_FILE) run --rm $(PROJECT_NAME) python manage.py $(command)
+
+## Command to restart django service
+restart:
+	@docker-compose -f $(CONFIG_FILE) restart django
