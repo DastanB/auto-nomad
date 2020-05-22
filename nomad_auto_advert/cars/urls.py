@@ -15,8 +15,8 @@ urlpatterns = [
     path('generations/', CarGenerationView.as_view()),
     path('series/', CarSerieView.as_view()),
     path('modifications/', CarModificationView.as_view()),
-    path('car-filters', CarCharacteristicView.as_view()),
-    path('car-characteristic-values', CarCharacteristicValueView.as_view()),
+    path('car-characteristics/', CarCharacteristicView.as_view()),
+    path('car-characteristic-values/', CarCharacteristicValueView.as_view()),
 
     path('equipment/', CarEquipmentView.as_view()),
     path('options/', CarOptionView.as_view()),
