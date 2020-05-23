@@ -1,6 +1,6 @@
 from django.db import models
 
-from nomad_auto_advert.filters.models import CarBodyType
+from nomad_auto_advert.filters.models import CarBodyType, CarTransmissionType, CarDriveType, CarEngineType
 
 
 class CarType(models.Model):
@@ -166,6 +166,12 @@ class Car(models.Model):
 
     body_type = models.ForeignKey('filters.CarBodyType', related_name='body_types',
                                   on_delete=models.SET_NULL, null=True)
+    transmission_type = models.ForeignKey('filters.CarTransmissionType', related_name='transmission_types',
+                                          on_delete=models.SET_NULL, null=True)
+    drive_type = models.ForeignKey('filters.CarDriveType', related_name='drive_types',
+                                   on_delete=models.SET_NULL, null=True)
+    engine_type = models.ForeignKey('filters.CarEngineType', related_name='engine_types',
+                                    on_delete=models.SET_NULL, null=True)
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
 
@@ -176,6 +182,30 @@ class Car(models.Model):
             b = CarBodyType.objects.filter(name__iexact=values.first().value)
             if b.exists():
                 self.body_type = b.first()
+
+    def set_transmission_type(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=24,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            b = CarTransmissionType.objects.filter(name__iexact=values.first().value)
+            if b.exists():
+                self.transmission_type = b.first()
+
+    def set_drive_type(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=27,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            b = CarDriveType.objects.filter(name__iexact=values.first().value)
+            if b.exists():
+                self.drive_type = b.first()
+
+    def set_engine_type(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=12,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            b = CarEngineType.objects.filter(name__iexact=values.first().value)
+            if b.exists():
+                self.engine_type = b.first()
 
     def create_car(self, data):
         if data:
@@ -205,6 +235,9 @@ class Car(models.Model):
                 self.car_color = car_color.first()
             self.mileage = data.get('mileage')
             self.set_body_type()
+            self.set_transmission_type()
+            self.set_drive_type()
+            self.set_engine_type()
 
             self.save()
             return self

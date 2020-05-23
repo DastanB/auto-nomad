@@ -11,3 +11,25 @@ class CarBodyType(models.Model):
 
     def __str__(self):
         return f"{self.id}: {self.name}"
+
+
+class CarTransmissionType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
+
+class CarDriveType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
+
+class CarEngineType(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.id}: {self.name}"
+
