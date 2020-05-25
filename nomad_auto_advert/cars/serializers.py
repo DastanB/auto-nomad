@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from nomad_auto_advert.cars.models import CarType, CarMark, CarModel, CarGeneration, CarSerie, CarModification, \
     CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car, CarColor
-from nomad_auto_advert.filters.serializers import CarBodyTypeSerializer
+from nomad_auto_advert.filters.serializers import CarBodyTypeSerializer, CarTransmissionTypeSerializer, \
+    CarDriveTypeSerializer, CarEngineTypeSerializer
 
 
 class CarTypeSerializer(serializers.ModelSerializer):
@@ -91,6 +92,9 @@ class CarSerializer(serializers.ModelSerializer):
     car_modification = CarModificationSerializer()
     car_color = CarColorSerializer()
     body_type = CarBodyTypeSerializer()
+    transmission_type = CarTransmissionTypeSerializer()
+    drive_type = CarDriveTypeSerializer()
+    engine_type = CarEngineTypeSerializer()
 
     class Meta:
         model = Car

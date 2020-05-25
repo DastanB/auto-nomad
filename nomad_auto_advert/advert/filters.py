@@ -83,7 +83,7 @@ class AdvertSearchFilter(filters.FilterSet):
     @staticmethod
     def filter_by_transmission_type(queryset, value, *args, **kwargs):
         transmission_type = args[0]
-        return queryset.filter(car__car_modification__car_characteristic_values__car_characteristic__type=transmission_type)
+        return queryset.filter(car__transmission_type=transmission_type)
 
     @staticmethod
     def filter_by_car_body_type(queryset, value, *args, **kwargs):
@@ -93,7 +93,7 @@ class AdvertSearchFilter(filters.FilterSet):
     @staticmethod
     def filter_by_engine_type(queryset, value, *args, **kwargs):
         engine = args[0]
-        return queryset.filter(car__car_modification__car_characteristic_values__car_characteristic__type=engine)
+        return queryset.filter(car__engine_type=engine)
 
     @staticmethod
     def mileage_begin_gte(queryset, value, *args, **kwargs):
@@ -108,7 +108,7 @@ class AdvertSearchFilter(filters.FilterSet):
     @staticmethod
     def drive_type_filter(queryset, value, *args, **kwargs):
         drive = args[0]
-        return queryset.filter(car__car_modification__car_characteristic_values__car_characteristic__type=drive)
+        return queryset.filter(car__drive_type=drive)
 
     def engine_volume_gte(self, queryset, value, *args, **kwargs):
         volume = args[0]
