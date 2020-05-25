@@ -166,6 +166,8 @@ class Car(models.Model):
 
     body_type = models.ForeignKey('filters.CarBodyType', related_name='body_types',
                                   on_delete=models.SET_NULL, null=True)
+    engine_volume = models.FloatField(null=True, blank=True)
+    engine_power = models.PositiveIntegerField(null=True, blank=True)
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
 
@@ -176,6 +178,20 @@ class Car(models.Model):
             b = CarBodyType.objects.filter(name__iexact=values.first().value)
             if b.exists():
                 self.body_type = b.first()
+
+    def set_engine_volume(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=13,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            v = round(float(values.first().value)/1000, 1)
+            self.engine_volume = v
+
+    def set_engine_power(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=14,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = int(values.first().value)
+            self.engine_power = p
 
     def create_car(self, data):
         if data:
@@ -204,7 +220,10 @@ class Car(models.Model):
             if car_color.exists():
                 self.car_color = car_color.first()
             self.mileage = data.get('mileage')
+            self.year = data.get("age")
             self.set_body_type()
+            self.set_engine_volume()
+            self.set_engine_power()
 
             self.save()
             return self

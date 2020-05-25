@@ -11,3 +11,10 @@ class CarBodyType(models.Model):
 
     def __str__(self):
         return f"{self.id}: {self.name}"
+
+
+class EngineVolumeType(models.Model):
+    amount = models.FloatField()
+
+    def __str__(self):
+        return f"{self.id}: {self.amount}"

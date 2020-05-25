@@ -7,11 +7,11 @@ from nomad_auto_advert.cars.filters import CarMarkFilter, CarModelFilter, CarGen
     CarModificationFilter, CarCharacteristicFilter, CarCharacteristicValueFilter, CarOptionValueFilter, CarOptionFilter, \
     CarEquipmentFilter
 from nomad_auto_advert.cars.models import CarType, CarMark, CarModel, CarGeneration, CarSerie, CarModification, \
-    CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car
+    CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car, CarColor
 from nomad_auto_advert.cars.serializers import CarTypeSerializer, CarMarkSerializer, CarModelSerializer, \
     CarGenerationSerializer, CarSerieSerializer, CarModificationSerializer, CarCharacteristicSerializer, \
     CarCharacteristicValueSerializer, CarOptionSerializer, CarOptionValueSerializer, CarEquipmentSerializer, \
-    CarSerializer, CarDetailSerializer
+    CarSerializer, CarDetailSerializer, CarColorSerializer
 from django_filters import rest_framework as filters
 
 
@@ -19,6 +19,11 @@ class CarView(generics.ListAPIView):
     permission_classes = (AllowAny, )
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = None
+
+
+class CarColorView(CarView):
+    serializer_class = CarColorSerializer
+    queryset = CarColor.objects.all()
 
 
 class CarTypeView(CarView):

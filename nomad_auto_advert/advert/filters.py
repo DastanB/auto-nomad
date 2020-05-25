@@ -30,12 +30,14 @@ class AdvertSearchFilter(filters.FilterSet):
     transmission = filters.CharFilter(method='filter_by_transmission_type')  # Коробка передач
     body = filters.CharFilter(method='filter_by_car_body_type')  # Кузов
     engine = filters.CharFilter(method='filter_by_engine_type')  # Двигатель
-    engine_volume_begin = filters.CharFilter()  # Объем двигателя
-    engine_volume_end = filters.CharFilter()  # Объем двигателя
+    engine_volume_begin = filters.CharFilter(method="engine_volume_gte")  # Объем двигателя
+    engine_volume_end = filters.CharFilter(method="engine_volume_lte")  # Объем двигателя
     drive_type = filters.CharFilter(method='drive_type_filter')  # Привод машины
-    power = filters.CharFilter()  # Мощность л.с.
+    power_begin = filters.CharFilter(method='engine_power_gte')  # Мощность л.с.
+    power_end = filters.CharFilter(method='engine_power_gte')  # Мощность л.с.
     mileage_begin = filters.CharFilter(method='mileage_begin_gte')  # Пробег
     mileage_end = filters.CharFilter(method='mileage_end_lte')  # Пробег
+    color = filters.NumberFilter(method="filter_by_color")
 
     @staticmethod
     def filter_by_mark(queryset, value, *args, **kwargs):
@@ -57,7 +59,7 @@ class AdvertSearchFilter(filters.FilterSet):
         year = args[0]
         if year.isdigit():
             year = int(year)
-            return queryset.filter(car__car_generation__year_begin__gte=year)
+            return queryset.filter(car__year__gte=year)
         pass
 
     @staticmethod
@@ -65,7 +67,7 @@ class AdvertSearchFilter(filters.FilterSet):
         year = args[0]
         if year.isdigit():
             year = int(year)
-            return queryset.filter(car__car_generation__year_end__lte=year)
+            return queryset.filter(car__year__lte=year)
         pass
 
     @staticmethod
@@ -108,3 +110,22 @@ class AdvertSearchFilter(filters.FilterSet):
         drive = args[0]
         return queryset.filter(car__car_modification__car_characteristic_values__car_characteristic__type=drive)
 
+    def engine_volume_gte(self, queryset, value, *args, **kwargs):
+        volume = args[0]
+        return queryset.filter(car__engine_volume__gte=volume)
+
+    def engine_volume_lte(self, queryset, value, *args, **kwargs):
+        volume = args[0]
+        return queryset.filter(car__engine_volume__lte=volume)
+
+    def engine_power_gte(self, queryset, value, *args, **kwargs):
+        power = args[0]
+        return queryset.filter(car__engine_power__gte=power)
+
+    def engine_power_lte(self, queryset, value, *args, **kwargs):
+        power = args[0]
+        return queryset.filter(car__engine_power__lte=power)
+
+    def filter_by_color(self, queryset, value, *args, **kwargs):
+        color = args[0]
+        return queryset.filter(car__car_color=color)
