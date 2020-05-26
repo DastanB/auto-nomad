@@ -174,6 +174,9 @@ class Car(models.Model):
                                     on_delete=models.SET_NULL, null=True)
     engine_volume = models.FloatField(null=True, blank=True)
     engine_power = models.PositiveIntegerField(null=True, blank=True)
+    trunk_volume = models.PositiveIntegerField(null=True, blank=True)
+    road_clearance = models.PositiveIntegerField(null=True, blank=True)
+    acceleration = models.FloatField(null=True, blank=True)
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
 
@@ -198,6 +201,30 @@ class Car(models.Model):
         if values.exists():
             p = int(values.first().value)
             self.engine_power = p
+
+    def set_trunk_volume(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=44,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = int(values.first().value)
+            print(p)
+            self.trunk_volume = p
+
+    def set_road_clearance(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=38,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = int(values.first().value)
+            print(p)
+            self.road_clearance = p
+
+    def set_acceleration(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=33,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = values.first().value
+            print(p)
+            self.acceleration = p
 
     def set_transmission_type(self):
         values = CarCharacteristicValue.objects.filter(car_characteristic__ext=24,
@@ -257,6 +284,9 @@ class Car(models.Model):
             self.set_transmission_type()
             self.set_drive_type()
             self.set_engine_type()
+            self.set_trunk_volume()
+            self.set_road_clearance()
+            self.set_acceleration()
 
             self.save()
             return self
