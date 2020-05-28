@@ -177,6 +177,7 @@ class Car(models.Model):
     trunk_volume = models.PositiveIntegerField(null=True, blank=True)
     road_clearance = models.PositiveIntegerField(null=True, blank=True)
     acceleration = models.FloatField(null=True, blank=True)
+    fuel_consumption = models.FloatField(null=True, blank=True)
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
 
@@ -207,7 +208,6 @@ class Car(models.Model):
                                                        car_modification=self.car_modification)
         if values.exists():
             p = int(values.first().value)
-            print(p)
             self.trunk_volume = p
 
     def set_road_clearance(self):
@@ -215,7 +215,6 @@ class Car(models.Model):
                                                        car_modification=self.car_modification)
         if values.exists():
             p = int(values.first().value)
-            print(p)
             self.road_clearance = p
 
     def set_acceleration(self):
@@ -223,8 +222,14 @@ class Car(models.Model):
                                                        car_modification=self.car_modification)
         if values.exists():
             p = values.first().value
-            print(p)
             self.acceleration = p
+
+    def set_fuel_consumption(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=52,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = values.first().value
+            self.fuel_consumption = p
 
     def set_transmission_type(self):
         values = CarCharacteristicValue.objects.filter(car_characteristic__ext=24,
@@ -287,6 +292,7 @@ class Car(models.Model):
             self.set_trunk_volume()
             self.set_road_clearance()
             self.set_acceleration()
+            self.set_fuel_consumption()
 
             self.save()
             return self

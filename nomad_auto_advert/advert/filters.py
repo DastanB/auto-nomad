@@ -42,6 +42,8 @@ class AdvertSearchFilter(filters.FilterSet):
     clearance_begin = filters.CharFilter(method='road_clearance_gte') # клиренс мм
     acceleration_begin = filters.CharFilter(method='acceleration_gte') # ускорение сек
     acceleration_end = filters.CharFilter(method='acceleration_lte') # ускорение сек
+    fuel_consumption_end = filters.CharFilter(method='fuel_consumption_lte') # расход топдива
+    rule_type = filters.CharFilter(method='steering_wheel_type') #руль
 
     @staticmethod
     def filter_by_mark(queryset, value, *args, **kwargs):
@@ -149,3 +151,11 @@ class AdvertSearchFilter(filters.FilterSet):
     def acceleration_lte(self, queryset, value, *args, **kwargs):
         acceleration = args[0]
         return queryset.filter(car__acceleration__lte=acceleration)
+
+    def fuel_consumption_lte(self, queryset, value, *args, **kwargs):
+        fuel = args[0]
+        return queryset.filter(car__fuel_consumption__lte=fuel)
+
+    def steering_wheel_type(self, queryset, value, *args, **kwargs):
+        wheel = args[0]
+        return queryset.filter(rule_type=wheel)
