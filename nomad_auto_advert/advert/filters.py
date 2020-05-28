@@ -40,8 +40,8 @@ class AdvertSearchFilter(filters.FilterSet):
     color = filters.NumberFilter(method="filter_by_color")
     trunk_volume_begin = filters.CharFilter(method='trunk_volume_gte') # обьем багажа литр
     clearance_begin = filters.CharFilter(method='road_clearance_gte') # клиренс мм
-    acceleration_begin = filters.CharFilter(method='acceeration_gte') # ускорение сек
-    acceleration_end = filters.CharFilter(method='acceeration_lte') # ускорение сек
+    acceleration_begin = filters.CharFilter(method='acceleration_gte') # ускорение сек
+    acceleration_end = filters.CharFilter(method='acceleration_lte') # ускорение сек
 
     @staticmethod
     def filter_by_mark(queryset, value, *args, **kwargs):
@@ -144,8 +144,8 @@ class AdvertSearchFilter(filters.FilterSet):
 
     def acceleration_gte(self, queryset, value, *args, **kwargs):
         acceleration = args[0]
-        return queryset.filter(car__road_clearance__gte=acceleration)
+        return queryset.filter(car__acceleration__gte=acceleration)
 
     def acceleration_lte(self, queryset, value, *args, **kwargs):
         acceleration = args[0]
-        return queryset.filter(car__road_clearance__lte=acceleration)
+        return queryset.filter(car__acceleration__lte=acceleration)
