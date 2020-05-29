@@ -177,6 +177,8 @@ class Car(models.Model):
     trunk_volume = models.PositiveIntegerField(null=True, blank=True)
     road_clearance = models.PositiveIntegerField(null=True, blank=True)
     acceleration = models.FloatField(null=True, blank=True)
+    max_speed = models.FloatField(null=True, blank=True)
+    max_torque = models.FloatField(null=True, blank=True)
     fuel_consumption = models.FloatField(null=True, blank=True)
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
@@ -223,6 +225,20 @@ class Car(models.Model):
         if values.exists():
             p = values.first().value
             self.acceleration = p
+
+    def set_max_speed(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=32,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = values.first().value
+            self.max_speed = p
+
+    def set_max_torque(self):
+        values = CarCharacteristicValue.objects.filter(car_characteristic__ext=16,
+                                                       car_modification=self.car_modification)
+        if values.exists():
+            p = values.first().value
+            self.max_torque = p
 
     def set_fuel_consumption(self):
         values = CarCharacteristicValue.objects.filter(car_characteristic__ext=52,
@@ -293,6 +309,8 @@ class Car(models.Model):
             self.set_road_clearance()
             self.set_acceleration()
             self.set_fuel_consumption()
+            self.set_max_speed()
+            self.set_max_torque()
 
             self.save()
             return self

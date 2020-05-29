@@ -44,6 +44,10 @@ class AdvertSearchFilter(filters.FilterSet):
     acceleration_end = filters.CharFilter(method='acceleration_lte') # ускорение сек
     fuel_consumption_end = filters.CharFilter(method='fuel_consumption_lte') # расход топдива
     rule_type = filters.CharFilter(method='steering_wheel_type') #руль
+    max_speed_begin = filters.CharFilter(method='max_speed_gte') # максимальная скорость
+    max_speed_end = filters.CharFilter(method='max_speed_lte') # максимальная скорость
+    max_torque_begin = filters.CharFilter(method='max_torque_gte') # максимальный крутящий момент
+    max_torque_end = filters.CharFilter(method='max_torque_lte') # максимальный крутящий момент
 
     @staticmethod
     def filter_by_mark(queryset, value, *args, **kwargs):
@@ -159,3 +163,19 @@ class AdvertSearchFilter(filters.FilterSet):
     def steering_wheel_type(self, queryset, value, *args, **kwargs):
         wheel = args[0]
         return queryset.filter(rule_type=wheel)
+
+    def max_speed_gte(self, queryset, value, *args, **kwargs):
+        speed = args[0]
+        return queryset.filter(car__max_speed__gte=speed)
+
+    def max_speed_lte(self, queryset, value, *args, **kwargs):
+        speed = args[0]
+        return queryset.filter(car__max_speed__lte=speed)
+
+    def max_torque_gte(self, queryset, value, *args, **kwargs):
+        torque = args[0]
+        return queryset.filter(car__max_torque__gte=torque)
+
+    def max_torque_lte(self, queryset, value, *args, **kwargs):
+        torque = args[0]
+        return queryset.filter(car__max_torque__lte=torque)
