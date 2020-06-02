@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from nomad_auto_advert.advert.models import AdvertImage, CarBodyState
+from nomad_auto_advert.advert.models import AdvertImage, CarBodyState, Advert
 from nomad_auto_advert.microservices.models import Service
 
 
@@ -48,6 +48,7 @@ class AdvertSearchFilter(filters.FilterSet):
     max_speed_end = filters.CharFilter(method='max_speed_lte') # максимальная скорость
     max_torque_begin = filters.CharFilter(method='max_torque_gte') # максимальный крутящий момент
     max_torque_end = filters.CharFilter(method='max_torque_lte') # максимальный крутящий момент
+    image_filter = filters.BooleanFilter(method='filter_by_image')
 
     @staticmethod
     def filter_by_mark(queryset, value, *args, **kwargs):
@@ -179,3 +180,7 @@ class AdvertSearchFilter(filters.FilterSet):
     def max_torque_lte(self, queryset, value, *args, **kwargs):
         torque = args[0]
         return queryset.filter(car__max_torque__lte=torque)
+
+    def filter_by_image(self, queryset, value, *args, **kwargs):
+        image = args[0]
+        return queryset.filter(advert_images__isnull=False)
