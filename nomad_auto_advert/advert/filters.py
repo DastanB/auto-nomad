@@ -183,4 +183,6 @@ class AdvertSearchFilter(filters.FilterSet):
 
     def filter_by_image(self, queryset, value, *args, **kwargs):
         image = args[0]
-        return queryset.filter(advert_images__isnull=False)
+        if image == 'True':
+            return queryset.filter(advert_images__isnull=False)
+        return queryset
