@@ -24,3 +24,8 @@ class CarEngineTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarEngineType
         fields = "__all__"
+
+
+class TypeSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    type = serializers.CharField(read_only=True)
