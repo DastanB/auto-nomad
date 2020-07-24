@@ -83,7 +83,13 @@ class CarColorSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class CarSerializer(serializers.ModelSerializer):
+class CarBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = "__all__"
+
+
+class CarSerializer(CarBaseSerializer):
     car_type = CarTypeSerializer()
     car_mark = CarMarkSerializer()
     car_model = CarModelSerializer()
@@ -95,10 +101,6 @@ class CarSerializer(serializers.ModelSerializer):
     transmission_type = CarTransmissionTypeSerializer()
     drive_type = CarDriveTypeSerializer()
     engine_type = CarEngineTypeSerializer()
-
-    class Meta:
-        model = Car
-        fields = "__all__"
 
 
 class CarDetailSerializer(CarSerializer):
@@ -112,3 +114,10 @@ class CarDetailSerializer(CarSerializer):
         car_characteristics = CarCharacteristicValue.objects.filter(car_modification_id=modification_id)
         return CarCharacteristicValueSerializer(car_characteristics, many=True).data
 
+
+class CarUpdateSerializer(CarBaseSerializer):
+    def update(self, instance, validated_data):
+        if validated_data.get('car_color'):
+            validated_data['car_color'] = CarColor.objects.get(ext=validated_data.get('car_color'))
+        print(validated_data)
+        return super(CarUpdateSerializer, self).update(instance, validated_data)

@@ -30,7 +30,7 @@ class Profile(models.Model):
     )
 
     user_ext = models.PositiveIntegerField(unique=True)
-    phone = models.CharField(max_length=12)
+    phone = models.CharField(max_length=12, unique=True)
     email = models.EmailField(blank=True, null=True)
     first_name = models.CharField(max_length=100, blank=True, null=True)
     last_name = models.CharField(max_length=100, blank=True, null=True)
@@ -54,3 +54,4 @@ class Profile(models.Model):
 
     class Meta:
         verbose_name = "Пользователь"
+        unique_together = ('user_ext', 'phone')

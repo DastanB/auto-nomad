@@ -21,30 +21,44 @@ class AdvertSerializer(serializers.ModelSerializer):
                   'city_ext', 'contact_name', 'contact_email', 'price', 'exchange',
                   'to_order', 'rule_type', 'description',) + read_only_fields
 
-    def validate_basebuy(self, data):
+    @staticmethod
+    def generate_exception_for_base_buy(name: str):
+        raise exceptions.ValidationError(detail={
+            'success': False,
+            'message': f'[{name}] must be given',
+            'description': f'Set [{name}] in Garage Project'
+        })
+
+    def validate_base_buy(self, data):
         if not data.get('car_type'):
-            raise exceptions.ValidationError(detail='[car_type] must be given')
+            self.generate_exception_for_base_buy(name='car_type')
         if not data.get('car_mark'):
-            raise exceptions.ValidationError(detail='[car_mark] must be given')
+            self.generate_exception_for_base_buy(name='car_mark')
         if not data.get('car_model'):
-            raise exceptions.ValidationError(detail='[car_model] must be given')
+            self.generate_exception_for_base_buy(name='car_model')
         if not data.get('car_generation'):
-            raise exceptions.ValidationError(detail='[car_generation] must be given')
+            self.generate_exception_for_base_buy(name='car_generation')
         if not data.get('car_serie'):
-            raise exceptions.ValidationError(detail='[car_serie] must be given')
+            self.generate_exception_for_base_buy(name='car_serie')
         if not data.get('car_modification'):
-            raise exceptions.ValidationError(detail='[car_modification] must be given')
+            self.generate_exception_for_base_buy(name='car_modification')
         if not data.get('car_color'):
-            raise exceptions.ValidationError(detail='[car_color] must be given')
+            self.generate_exception_for_base_buy(name='car_color')
 
     def create(self, validated_data):
         garage = Service.objects.get(name='garage')
         response = garage.remote_call('GET', f'/api/microservices/car/{validated_data.get("car_ext")}/')
         if response.ok:
             data = response.json()
-            self.validate_basebuy(data)
+            data['car_ext'] = validated_data.get('car_ext')
+            self.validate_base_buy(data)
             car = Car().create_car(data=data)
             validated_data['car'] = car
+        else:
+            raise exceptions.NotFound(detail={
+                'success': False,
+                'message': f"Car with id={validated_data.get('car_ext')} not found."
+            })
 
         return super().create(validated_data)
 

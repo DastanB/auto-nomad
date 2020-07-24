@@ -53,17 +53,19 @@ class CapsTokenAuthentication(BaseAuthentication):
 
         data = {
             'user_ext': id,
-            'phone': response_data['phone'],
-            'email': response_data['email'],
-            'first_name': response_data['first_name'],
-            'last_name': response_data['last_name'],
-            'patronymic': response_data['patronymic']
+            'phone': response_data.get('phone'),
+            'email': response_data.get('email'),
+            'first_name': response_data.get('first_name'),
+            'last_name': response_data.get('last_name'),
+            'patronymic': response_data.get('patronymic'),
+            'city': str(response_data.get('city').get('id')) if response_data.get('city') else ''
         }
+
         if Profile.objects.filter(user_ext=id).exists():
             profile = Profile.objects.get(user_ext=id)
             not_synced_fields = [x for x in data.keys() if data[x] != getattr(profile, x)]
             if len(not_synced_fields):
-                print('not synced')
+                print(f'not_synced_fields: {not_synced_fields}')
                 for f in not_synced_fields:
                     setattr(profile, f, data[f])
                 profile.save()

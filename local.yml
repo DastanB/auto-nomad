@@ -23,7 +23,7 @@ services:
     networks:
       masternet:
         aliases:
-          - nomad_auto_advert
+          - advert
       db:
       cache:
       app:
@@ -42,6 +42,8 @@ services:
       - ./.envs/.local/.postgres
     networks:
       - db
+    ports:
+    - '54322:5432'
 
 #  mailhog:
 #    image: mailhog/mailhog:v1.0.0

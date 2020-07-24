@@ -144,17 +144,14 @@ class CarCharacteristicValue(models.Model):
 
 class CarColor(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    ext = models.PositiveSmallIntegerField(unique=True, null=True)
 
     def __str__(self):
         return self.name
 
 
-'''
-Car Model
-'''
-
-
 class Car(models.Model):
+    car_ext = models.PositiveIntegerField(unique=True, null=True)
     car_type = models.ForeignKey('CarType', related_name='cars', on_delete=models.SET_NULL, null=True)
     car_mark = models.ForeignKey('CarMark', related_name='cars', on_delete=models.SET_NULL, null=True)
     car_model = models.ForeignKey('CarModel', related_name='cars', on_delete=models.SET_NULL, null=True)
@@ -273,6 +270,7 @@ class Car(models.Model):
 
     def create_car(self, data):
         if data:
+            self.car_ext = data.get('car_ext')
             car_type = CarType.objects.filter(ext=data.get('car_type').get('ext'))
             if car_type.exists():
                 self.car_type = car_type.first()
@@ -291,9 +289,10 @@ class Car(models.Model):
             car_modification = CarModification.objects.filter(ext=data.get('car_modification').get('ext'))
             if car_modification.exists():
                 self.car_modification = car_modification.first()
-            car_equipment = CarEquipment.objects.filter(ext=data.get('car_equipment').get('ext'))
-            if car_equipment.exists():
-                self.car_equipment = car_equipment.first()
+            if data.get('car_equipment'):
+                car_equipment = CarEquipment.objects.filter(ext=data.get('car_equipment').get('ext'))
+                if car_equipment.exists():
+                    self.car_equipment = car_equipment.first()
             car_color = CarColor.objects.filter(name__icontains=data.get('car_color').get('name'))
             if car_color.exists():
                 self.car_color = car_color.first()
