@@ -8,6 +8,6 @@ class AdvertConfig(AppConfig):
 
     def ready(self):
         try:
-            import nomad_auto_advert.users.signals  # noqa F401
+            import nomad_auto_advert.advert.signals  # noqa F401
         except ImportError:
             pass
