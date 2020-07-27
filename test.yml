@@ -49,7 +49,7 @@ services:
         - "traefik.backend.healthcheck.interval=1s"
         - "traefik.backend.healthcheck.port=5000"
         - "traefik.backend.healthcheck.scheme=http"
-        - "traefik.backend.healthcheck.hostname=request.test.auto-nomad.kz"
+        - "traefik.backend.healthcheck.hostname=advert.test.auto-nomad.kz"
 
   postgres:
     build:
