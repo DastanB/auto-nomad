@@ -3,7 +3,7 @@ from rest_framework import routers
 from nomad_auto_advert.advert.views import AdvertViewSet, AdvertImageViewSet, CarBodyStateViewSet, CarBodyListView, \
     AdvertSearchView
 
-app_name = 'advert'
+app_name = 'adverts'
 
 router = routers.DefaultRouter()
 router.register(r'images', AdvertImageViewSet, basename='advert_images')
@@ -13,7 +13,6 @@ router.register(r'', AdvertViewSet, basename='adverts')
 
 urlpatterns = (
     path(r'car-body-types/', CarBodyListView.as_view()),
-    path(r'search/', AdvertSearchView.as_view()),
-
+    path(r'filters/', AdvertSearchView.as_view()),
     path('', include(router.urls))
 )

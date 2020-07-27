@@ -22,6 +22,7 @@ django-filter==2.1.0
 django-cors-headers==3.0.2
 django-storages[boto3]==1.7.1  # https://github.com/jschneier/django-storages
 django-reversion==3.0.4 # https://django-reversion.readthedocs.io/en/stable/api.html
+django-imagekit==4.0.2
 
 # Django REST Framework
 djangorestframework==3.9.3  # https://github.com/encode/django-rest-framework

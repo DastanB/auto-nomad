@@ -22,8 +22,10 @@ class UserListDebug(generics.ListAPIView):
     queryset = User.objects.all()
 
 
-class GarageProfileViewSet(MultiSerializerViewSetMixin, viewsets.ModelViewSet):
+class GarageProfileViewSet(MultiSerializerViewSetMixin, viewsets.ReadOnlyModelViewSet):
     serializer_class = GarageProfileSerializer
     permission_classes = (AllowAny, )
     pagination_class = None
-    queryset = Profile.objects.all()
+
+    def get_queryset(self):
+        return Profile.objects.filter(id=self.request.user.id)

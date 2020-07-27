@@ -1,6 +1,17 @@
 from django.db import models
-from nomad_auto_advert.cars.models import Car, CarType, CarMark, CarModel, CarGeneration, CarSerie, CarModification, \
-    CarEquipment, CarColor
+from imagekit.models import ImageSpecField
+from imagekit.processors import ResizeToFill
+from nomad_auto_advert.cars.models import (
+    Car,
+    CarType,
+    CarMark,
+    CarModel,
+    CarGeneration,
+    CarSerie,
+    CarModification,
+    CarEquipment,
+    CarColor
+)
 from nomad_auto_advert.microservices.models import Service
 
 
@@ -16,6 +27,12 @@ class Advert(models.Model):
         on_delete=models.SET_NULL,
         null=True)
     car_ext = models.PositiveIntegerField()
+    city = models.ForeignKey(
+        to='geo.City',
+        related_name='adverts',
+        on_delete=models.SET_NULL,
+        null=True
+    )
 
     NEW, IN_MOTION, NON_RUNNER, DAMAGED = range(4)
     CONDITION_OPTION = (
@@ -32,10 +49,6 @@ class Advert(models.Model):
     cleared_by_customs = models.BooleanField(
         'Растаможен',
         default=False
-    )
-    city_ext = models.PositiveIntegerField(
-        'Город',
-        null=True, blank=True
     )
     contact_name = models.CharField(
         'Контактное имя',
@@ -91,10 +104,15 @@ class AdvertImage(models.Model):
     advert = models.ForeignKey(
         to='advert.Advert',
         related_name='advert_images',
-        on_delete=models.CASCADE,
-        null=True
+        on_delete=models.CASCADE
     )
     image = models.ImageField()
+    image_thumbnail = ImageSpecField(
+        source='image',
+        processors=[ResizeToFill(200, 200)],
+        format='JPEG',
+        options={'quality': 60}
+    )
 
 
 class CarBody(models.Model):

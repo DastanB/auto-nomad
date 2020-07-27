@@ -8,10 +8,11 @@ from rest_framework import permissions
 
 api_url_patterns = [
     path("users/", include("nomad_auto_advert.users.urls", namespace="users")),
-    path("microservices/", include("nomad_auto_advert.microservices.urls", namespace="microservcies")),
-    path(r'advert/', include('nomad_auto_advert.advert.urls', namespace='advert')),
-    path(r"cars/", include('nomad_auto_advert.cars.urls', namespace='cars')),
-    path(r"filters/", include('nomad_auto_advert.filters.urls', namespace="filters")),
+    path("microservices/", include("nomad_auto_advert.microservices.urls", namespace="microservices")),
+    path('adverts/', include('nomad_auto_advert.advert.urls', namespace='adverts')),
+    path("cars/", include('nomad_auto_advert.cars.urls', namespace='cars')),
+    path("filters/", include('nomad_auto_advert.filters.urls', namespace="filters")),
+    path('geo/', include('nomad_auto_advert.geo.urls', namespace='geo')),
 ]
 
 urlpatterns = [

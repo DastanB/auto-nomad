@@ -2,18 +2,24 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, viewsets
 from rest_framework.parsers import MultiPartParser
 from django_filters import rest_framework as filters
-from rest_framework.views import APIView
-
 from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION
 from nomad_auto_advert.advert.filters import AdvertImageFilter, CarBodyStateFilter, AdvertSearchFilter
 from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
-    CarBodySerializer, CarBodyStateReadSerializer
+    CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
-class AdvertViewSet(viewsets.ModelViewSet):
+class AdvertViewSet(MultiSerializerViewSetMixin,
+                    viewsets.ModelViewSet):
     serializer_class = AdvertSerializer
+    serializer_action_classes = {
+        'list': AdvertSerializer,
+        'retrieve': AdvertSerializer,
+        'create': AdvertSerializer,
+        'update': AdvertUpdateSerializer,
+        'partial_update': AdvertUpdateSerializer
+    }
     queryset = Advert.objects.all()
 
     def perform_create(self, serializer):
@@ -24,21 +30,19 @@ class AdvertViewSet(viewsets.ModelViewSet):
         return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.queryset
+        return self.queryset.filter(user=self.request.user)
 
 
-class AdvertImageViewSet(viewsets.ModelViewSet):
+class AdvertImageViewSet(MultiSerializerViewSetMixin,
+                         viewsets.ModelViewSet):
     serializer_class = AdvertImageSerializer
     parser_classes = (MultiPartParser, )
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = AdvertImageFilter
 
     def get_queryset(self):
-        advert = self.request.query_params.get('advert')
-        queryset = AdvertImage.objects.all()
-        if advert:
-            return queryset.filter(advert_id=advert, advert__user=self.request.user)
-        return queryset.none()
+        queryset = AdvertImage.objects.filter(advert__user=self.request.user)
+        return queryset
 
 
 class CarBodyListView(generics.ListAPIView):
@@ -60,11 +64,8 @@ class CarBodyStateViewSet(MultiSerializerViewSetMixin,
     filterset_class = CarBodyStateFilter
 
     def get_queryset(self):
-        advert = self.request.query_params.get('advert')
-        queryset = CarBodyState.objects.all()
-        if advert:
-            return queryset.filter(advert_id=advert)
-        return queryset.none()
+        queryset = CarBodyState.objects.filter(advert__user=self.request.user)
+        return queryset
 
 
 class AdvertSearchView(generics.ListAPIView):

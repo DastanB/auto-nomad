@@ -1,5 +1,19 @@
-from nomad_auto_advert.cars.models import CarColor, Car, CarType, CarMark, CarModel, CarGeneration, CarSerie, \
-    CarModification, CarEquipment
+import logging
+from nomad_auto_advert.microservices.models import Service
+from nomad_auto_advert.cars.models import (
+    CarColor,
+    Car,
+    CarType,
+    CarMark,
+    CarModel,
+    CarGeneration,
+    CarSerie,
+    CarModification,
+    CarEquipment
+)
+
+
+logger = logging.getLogger(__name__)
 
 
 def update_car(data):
@@ -27,3 +41,16 @@ def update_car(data):
             car.year = data.get('age')
         car.save()
     return car
+
+
+def get_service(name: str):
+    service = Service.objects.filter(name=name).first()
+    if service is not None:
+        try:
+            health_check = service.remote_call('get', '/api/microservices/health-check/')
+            if health_check.ok:
+                return service
+        except ConnectionError as exception:
+            logger.exception(exception)
+            return
+    return

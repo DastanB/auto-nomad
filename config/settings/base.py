@@ -78,6 +78,7 @@ LOCAL_APPS = [
     'nomad_auto_advert.advert.apps.AdvertConfig',
     "nomad_auto_advert.cars.apps.CarsAppConfig",
     "nomad_auto_advert.filters.apps.FiltersAppConfig",
+    "nomad_auto_advert.geo.apps.GeoAppConfig",
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
