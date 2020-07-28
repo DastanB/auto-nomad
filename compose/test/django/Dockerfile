@@ -15,8 +15,8 @@ RUN apt-get update \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup --system django \
-    && adduser --system --ingroup django django
+#RUN addgroup --system django \
+#    && adduser --system --ingroup django django
 
 # Requirements are installed here to ensure they will be cached.
 COPY ./requirements /requirements
@@ -45,11 +45,12 @@ RUN chown django /start-celerybeat
 COPY ./compose/test/django/celery/flower/start /start-flower
 RUN sed -i 's/\r$//g' /start-flower
 RUN chmod +x /start-flower
-COPY --chown=django:django . /app
+COPY . /app
+#COPY --chown=django:django . /app
 
 COPY ./compose/test/django/services.json /services.json
 
-USER django
+#USER django
 
 WORKDIR /app
 
