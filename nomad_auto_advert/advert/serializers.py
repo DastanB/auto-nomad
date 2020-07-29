@@ -7,18 +7,14 @@ from nomad_auto_advert.microservices.models import Service
 from nomad_auto_advert.utils.serializers import ChoiceValueDisplayField
 
 
-class AdvertSerializer(serializers.ModelSerializer):
-    car_condition_type = ChoiceValueDisplayField()
-    rule_type = ChoiceValueDisplayField()
-    car = CarSerializer(read_only=True)
-    city = CitySerializer(read_only=True)
-
+class AdvertBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advert
-        read_only_fields = ('user', 'car',)
-        fields = ('id', 'car_ext', 'car_condition_type', 'cleared_by_customs',
-                  'city', 'contact_name', 'contact_email', 'price', 'exchange',
-                  'to_order', 'rule_type', 'description',) + read_only_fields
+        read_only_fields = ('id', 'user', 'car', 'views_count', )
+        fields = read_only_fields + \
+                 ('car_ext', 'car_condition_type', 'cleared_by_customs', 'city',
+                  'contact_name', 'contact_email', 'price',
+                  'exchange', 'to_order', 'rule_type', 'description',)
 
     @staticmethod
     def generate_exception_for_base_buy(name: str):
@@ -44,7 +40,15 @@ class AdvertSerializer(serializers.ModelSerializer):
         if not data.get('car_color'):
             self.generate_exception_for_base_buy(name='car_color')
 
+    def check_if_exists(self):
+        if Car.objects.filter(car_ext=self.validated_data.get('car_ext')).exists():
+            raise exceptions.ValidationError(detail={
+                'success': False,
+                'message': f"Advert with car_ext={self.validated_data.get('car_ext')} already exists"
+            })
+
     def create(self, validated_data):
+        self.check_if_exists()
         garage = Service.objects.get(name='garage')
         response = garage.remote_call('GET', f'/api/microservices/car/{validated_data.get("car_ext")}/')
         if response.ok:
@@ -58,16 +62,22 @@ class AdvertSerializer(serializers.ModelSerializer):
                 'success': False,
                 'message': f"Car with id={validated_data.get('car_ext')} not found."
             })
-
         return super().create(validated_data)
+
+
+class AdvertSerializer(AdvertBaseSerializer):
+    car_condition_type = ChoiceValueDisplayField()
+    rule_type = ChoiceValueDisplayField()
+    car = CarSerializer(read_only=True)
+    city = CitySerializer(read_only=True)
 
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advert
         fields = ('id', 'car_condition_type', 'cleared_by_customs',
-                  'city', 'contact_name', 'contact_email', 'price', 'exchange',
-                  'to_order', 'rule_type', 'description',)
+                  'city', 'contact_name', 'contact_email', 'price',
+                  'exchange', 'to_order', 'rule_type', 'description',)
 
 
 class AdvertImageSerializer(serializers.ModelSerializer):

@@ -1,3 +1,4 @@
+from pprint import pprint
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import generics, viewsets
 from rest_framework.parsers import MultiPartParser
@@ -6,7 +7,7 @@ from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION
 from nomad_auto_advert.advert.filters import AdvertImageFilter, CarBodyStateFilter, AdvertSearchFilter
 from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
-    CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer
+    CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
@@ -16,7 +17,7 @@ class AdvertViewSet(MultiSerializerViewSetMixin,
     serializer_action_classes = {
         'list': AdvertSerializer,
         'retrieve': AdvertSerializer,
-        'create': AdvertSerializer,
+        'create': AdvertBaseSerializer,
         'update': AdvertUpdateSerializer,
         'partial_update': AdvertUpdateSerializer
     }
@@ -68,8 +69,21 @@ class CarBodyStateViewSet(MultiSerializerViewSetMixin,
         return queryset
 
 
-class AdvertSearchView(generics.ListAPIView):
+class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
     serializer_class = AdvertSerializer
-    queryset = Advert.objects.all()
     filter_backends = (filters.DjangoFilterBackend, )
     filterset_class = AdvertSearchFilter
+
+    def get_queryset(self):
+        return Advert.objects.all().select_related(
+            'car',
+            'car__body_type',
+            'car__drive_type',
+            'car__transmission_type',
+            'car__engine_type'
+        )
+
+    def get_object(self):
+        obj = super(AdvertSearchView, self).get_object()
+        obj.increment_views_count()
+        return obj

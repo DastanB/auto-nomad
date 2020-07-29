@@ -24,8 +24,8 @@ class Advert(models.Model):
     car = models.ForeignKey(
         to='cars.Car',
         related_name='adverts',
-        on_delete=models.SET_NULL,
-        null=True)
+        on_delete=models.CASCADE,
+    )
     car_ext = models.PositiveIntegerField()
     city = models.ForeignKey(
         to='geo.City',
@@ -86,6 +86,11 @@ class Advert(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    views_count = models.PositiveIntegerField(default=0)
+
+    def increment_views_count(self):
+        self.views_count = self.views_count + 1
+        self.save()
 
     def __str__(self):
         return f"ID: {self.id}, CONTACT: {self.contact_name}, CAR_ID: {self.car_ext}"
