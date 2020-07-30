@@ -48,7 +48,7 @@ class CarGenerationFilter(filters.FilterSet):
         year = args[0]
         if year.isdigit():
             year = int(year)
-            return queryset.filter(year_begin__gte=year)
+            return queryset.filter(year_end__gte=year)
         pass
 
     @staticmethod
@@ -56,7 +56,7 @@ class CarGenerationFilter(filters.FilterSet):
         year = args[0]
         if year.isdigit():
             year = int(year)
-            return queryset.filter(year_end__lte=year)
+            return queryset.filter(year_begin__lte=year)
         pass
 
 

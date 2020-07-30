@@ -316,4 +316,6 @@ class Car(models.Model):
         print('Car info not found')
 
     def __str__(self):
-        return f"{self.id}: {self.car_mark.name} {self.car_model.name}"
+        mark = self.car_mark.name if self.car_mark else "Fake"
+        model = self.car_model.name if self.car_model else "-"
+        return f"{self.id}: {mark} {model}"
