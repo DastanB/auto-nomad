@@ -1,13 +1,16 @@
-from pprint import pprint
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import generics, viewsets
-from rest_framework.parsers import MultiPartParser
 from django_filters import rest_framework as filters
+
+from rest_framework import generics, viewsets, status
+from rest_framework.parsers import MultiPartParser
+from rest_framework.response import Response
+
 from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION
 from nomad_auto_advert.advert.filters import AdvertImageFilter, CarBodyStateFilter, AdvertSearchFilter
-from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody
+from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, AdvertComplaint
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
-    CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer
+    CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer, \
+    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
@@ -87,3 +90,41 @@ class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
         obj = super(AdvertSearchView, self).get_object()
         obj.increment_views_count()
         return obj
+
+
+class AdvertFavouriteView(MultiSerializerViewSetMixin,
+                          generics.CreateAPIView,
+                          generics.ListAPIView,
+                          generics.RetrieveAPIView,
+                          generics.DestroyAPIView,
+                          viewsets.GenericViewSet):
+    serializer_action_classes = {
+        'create': AdvertFavouriteBaseSerializer,
+        'list': AdvertFavouriteSerializer,
+        'retrieve': AdvertFavouriteSerializer
+    }
+
+    def get_queryset(self):
+        return AdvertFavourite.objects.filter(profile=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response({'message': 'success'}, status=status.HTTP_200_OK)
+
+
+class AdvertComplaintViewSet(MultiSerializerViewSetMixin,
+                             generics.CreateAPIView,
+                             generics.ListAPIView,
+                             generics.RetrieveAPIView,
+                             viewsets.GenericViewSet):
+    serializer_class = AdvertComplaintSerializer
+
+    def get_queryset(self):
+        return AdvertComplaint.objects.filter(profile=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user)

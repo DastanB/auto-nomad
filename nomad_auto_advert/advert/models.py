@@ -1,6 +1,8 @@
 from django.db import models
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
+from model_utils.models import TimeStampedModel
+
 from nomad_auto_advert.cars.models import (
     Car,
     CarType,
@@ -144,3 +146,38 @@ class CarBodyState(models.Model):
     scratched = models.BooleanField(default=False)
     dent = models.BooleanField(default=False)
     rust = models.BooleanField(default=False)
+
+
+class AdvertFavourite(TimeStampedModel):
+    advert = models.ForeignKey(
+        to='advert.Advert',
+        related_name='favourites',
+        on_delete=models.CASCADE
+    )
+    profile = models.ForeignKey(
+        to='users.Profile',
+        related_name='favourites',
+        on_delete=models.CASCADE
+    )
+
+
+class AdvertComplaint(TimeStampedModel):
+    advert = models.ForeignKey(
+        to='advert.Advert',
+        related_name='complaints',
+        on_delete=models.CASCADE
+    )
+    profile = models.ForeignKey(
+        to='users.Profile',
+        related_name='complaints',
+        on_delete=models.CASCADE
+    )
+    is_spam = models.BooleanField(default=False)
+    is_inappropriate_content = models.BooleanField(default=False)
+    is_fake_information = models.BooleanField(default=False)
+
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        verbose_name = 'Жалоба'
+        verbose_name_plural = 'Жалобы'

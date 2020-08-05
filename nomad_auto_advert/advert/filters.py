@@ -1,6 +1,5 @@
 from django_filters import rest_framework as filters
-from nomad_auto_advert.advert.models import AdvertImage, CarBodyState, Advert
-from nomad_auto_advert.microservices.models import Service
+from nomad_auto_advert.advert.models import AdvertImage, CarBodyState
 
 
 class AdvertImageFilter(filters.FilterSet):

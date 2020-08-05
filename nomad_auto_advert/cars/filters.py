@@ -33,26 +33,22 @@ class CarGenerationFilter(filters.FilterSet):
     year_begin = filters.CharFilter(method='year_begin_gte')
     year_end = filters.CharFilter(method='year_end_lte')
 
-    @staticmethod
-    def search_by_name(queryset, value, *args, **kwargs):
+    def search_by_name(self, queryset, value, *args, **kwargs):
         generation = args[0]
         return queryset.filter(name__icontains=generation)
 
-    @staticmethod
-    def search_by_model_id(queryset, value, *args, **kwargs):
+    def search_by_model_id(self, queryset, value, *args, **kwargs):
         model_id = args[0]
         return queryset.filter(car_model_id=model_id)
 
-    @staticmethod
-    def year_begin_gte(queryset, value, *args, **kwargs):
+    def year_begin_gte(self, queryset, value, *args, **kwargs):
         year = args[0]
         if year.isdigit():
             year = int(year)
             return queryset.filter(year_end__gte=year)
         pass
 
-    @staticmethod
-    def year_end_lte(queryset, value, *args, **kwargs):
+    def year_end_lte(self, queryset, value, *args, **kwargs):
         year = args[0]
         if year.isdigit():
             year = int(year)
@@ -65,18 +61,15 @@ class CarSerieFilter(filters.FilterSet):
     model_id = filters.NumberFilter(method='search_by_model_id')
     generation_id = filters.NumberFilter(method='search_by_generation_id')
 
-    @staticmethod
-    def search_by_name(queryset, value, *args, **kwargs):
+    def search_by_name(self, queryset, value, *args, **kwargs):
         serie = args[0]
         return queryset.filter(name__icontains=serie)
 
-    @staticmethod
-    def search_by_model_id(queryset, value, *args, **kwargs):
+    def search_by_model_id(self, queryset, value, *args, **kwargs):
         model_id = args[0]
         return queryset.filter(car_model_id=model_id)
 
-    @staticmethod
-    def search_by_generation_id(queryset, value, *args, **kwargs):
+    def search_by_generation_id(self, queryset, value, *args, **kwargs):
         generation_id = args[0]
         return queryset.filter(car_generation_id=generation_id)
 
@@ -85,13 +78,11 @@ class CarModificationFilter(filters.FilterSet):
     modification_name = filters.CharFilter(method='search_by_name')
     serie_id = filters.NumberFilter(method='search_by_serie_id')
 
-    @staticmethod
-    def search_by_name(queryset, value, *args, **kwargs):
+    def search_by_name(self, queryset, value, *args, **kwargs):
         modification = args[0]
         return queryset.filter(name__icontains=modification)
 
-    @staticmethod
-    def search_by_serie_id(queryset, value, *args, **kwargs):
+    def search_by_serie_id(self, queryset, value, *args, **kwargs):
         serie_id = args[0]
         return queryset.filter(car_serie_id=serie_id)
 

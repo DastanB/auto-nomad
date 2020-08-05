@@ -1,5 +1,5 @@
 from rest_framework import serializers, exceptions
-from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody
+from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, AdvertComplaint
 from nomad_auto_advert.cars.models import Car
 from nomad_auto_advert.cars.serializers import CarSerializer
 from nomad_auto_advert.geo.serializers import CitySerializer
@@ -112,3 +112,21 @@ class CarBodyStateSerializer(serializers.ModelSerializer):
 
 class CarBodyStateReadSerializer(CarBodyStateSerializer):
     car_body = CarBodySerializer()
+
+
+class AdvertFavouriteBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdvertFavourite
+        fields = ("id", "advert")
+
+
+class AdvertFavouriteSerializer(AdvertFavouriteBaseSerializer):
+    advert = AdvertSerializer(read_only=True)
+
+
+class AdvertComplaintSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdvertComplaint
+        fields = ('id', 'advert', 'description',
+                  'is_spam', 'is_inappropriate_content', 'is_fake_information',
+                  'created', 'modified')
