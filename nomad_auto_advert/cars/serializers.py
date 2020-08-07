@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from nomad_auto_advert.cars.models import CarType, CarMark, CarModel, CarGeneration, CarSerie, CarModification, \
-    CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car, CarColor
+    CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car, CarColor, MultipleOption, \
+    Option
 from nomad_auto_advert.filters.serializers import CarBodyTypeSerializer, CarTransmissionTypeSerializer, \
     CarDriveTypeSerializer, CarEngineTypeSerializer
 
@@ -121,3 +122,15 @@ class CarUpdateSerializer(CarBaseSerializer):
             validated_data['car_color'] = CarColor.objects.get(ext=validated_data.get('car_color'))
         print(validated_data)
         return super(CarUpdateSerializer, self).update(instance, validated_data)
+
+
+class MultipleOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MultipleOption
+        fields = "__all__"
+
+
+class OptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+        fields = "__all__"

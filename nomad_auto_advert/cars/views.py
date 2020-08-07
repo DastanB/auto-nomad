@@ -7,11 +7,12 @@ from nomad_auto_advert.cars.filters import CarMarkFilter, CarModelFilter, CarGen
     CarModificationFilter, CarCharacteristicFilter, CarCharacteristicValueFilter, CarOptionValueFilter, CarOptionFilter, \
     CarEquipmentFilter
 from nomad_auto_advert.cars.models import CarType, CarMark, CarModel, CarGeneration, CarSerie, CarModification, \
-    CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car, CarColor
+    CarCharacteristic, CarCharacteristicValue, CarOption, CarOptionValue, CarEquipment, Car, CarColor, MultipleOption, \
+    Option
 from nomad_auto_advert.cars.serializers import CarTypeSerializer, CarMarkSerializer, CarModelSerializer, \
     CarGenerationSerializer, CarSerieSerializer, CarModificationSerializer, CarCharacteristicSerializer, \
     CarCharacteristicValueSerializer, CarOptionSerializer, CarOptionValueSerializer, CarEquipmentSerializer, \
-    CarSerializer, CarDetailSerializer, CarColorSerializer
+    CarSerializer, CarDetailSerializer, CarColorSerializer, MultipleOptionSerializer, OptionSerializer
 from django_filters import rest_framework as filters
 
 
@@ -107,3 +108,14 @@ class CarDetailView(generics.RetrieveAPIView):
         if car.exists():
             return car.first()
         raise exceptions.NotFound('Car with given id not found')
+
+
+class MultipleOptionView(generics.ListAPIView):
+    permission_classes = (AllowAny, )
+    serializer_class = MultipleOptionSerializer
+    queryset = MultipleOption.objects.all()
+
+
+class CustomOptionViewSet(viewsets.ModelViewSet):
+    serializer_class = OptionSerializer
+    queryset = Option.objects.all()

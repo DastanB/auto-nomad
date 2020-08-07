@@ -1,5 +1,8 @@
 from django.db import models
 
+from nomad_auto_advert.cars.constants import HEADLIGHTS_TYPES, SIGNALING_TYPES, SEAT_COUNT_TYPES, \
+    INTERIOR_MATERIAL_TYPES, INTERIOR_COLOR_TYPES, SEAT_TYPES, SPARE_WHEEL_TYPES, DISC_TYPES, DISC_SIZE_TYPES, \
+    AUDIO_SYSTEM_TYPES, CONDITIONER_TYPES, POWER_STEERING_TYPES, CRUISE_CONTROL_TYPES, CAMERA_TYPES
 from nomad_auto_advert.filters.models import CarBodyType, CarTransmissionType, CarDriveType, CarEngineType
 
 
@@ -319,3 +322,242 @@ class Car(models.Model):
         mark = self.car_mark.name if self.car_mark else "Fake"
         model = self.car_model.name if self.car_model else "-"
         return f"{self.id}: {mark} {model}"
+
+
+class MultipleOption(models.Model):
+    name = models.CharField(max_length=100)
+    separator_id = models.PositiveSmallIntegerField()
+
+
+class Option(models.Model):
+    car = models.ForeignKey('cars.Car', related_name='options', on_delete=models.CASCADE, null=True)
+
+    headlights = models.PositiveSmallIntegerField(
+        'Фары',
+        choices=HEADLIGHTS_TYPES,
+        null=True
+    )
+
+    electric_heating = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='electric_heating'
+    )
+
+    daytime_running_lights = models.BooleanField('Дневные ходовые огни', default=False)
+    fog_lights = models.BooleanField('Противотуманные фары', default=False)
+    automatic_headlight_range_control = models.BooleanField('Автоматический корректор фар', default=False)
+    headlight_washer = models.BooleanField('Омыватель фар', default=False)
+    adaptive_lighting_system = models.BooleanField('Система адаптивного освещения', default=False)
+    high_beam_control_system = models.BooleanField('Система управления дальним светом', default=False)
+    rain_sensor = models.BooleanField('Датчик дождя', default=False)
+    light_sensor = models.BooleanField('Датчик света', default=False)
+
+    signaling = models.PositiveSmallIntegerField(
+        'Сигнализация',
+        choices=SIGNALING_TYPES,
+        null=True
+    )
+
+    central_locking = models.BooleanField('Центральный замок', default=False)
+    immobilizer = models.BooleanField('Иммобилайзер', default=False)
+    interior_penetration_sensor = models.BooleanField('Датчик проникновения в салон (датчик объема)', default=False)
+
+    seat_count = models.PositiveSmallIntegerField(
+        'Количество мест',
+        choices=SEAT_COUNT_TYPES,
+        null=True
+    )
+
+    interior_material = models.PositiveSmallIntegerField(
+        'Материал салона',
+        choices=INTERIOR_MATERIAL_TYPES,
+        null=True
+    )
+
+    interior_color = models.PositiveSmallIntegerField(
+        'Цвет салона',
+        choices=INTERIOR_COLOR_TYPES,
+        null=True
+    )
+
+    seat_height_adjustment = models.PositiveSmallIntegerField(
+        'Регулировка сидений по высоте',
+        choices=SEAT_TYPES,
+        null=True
+    )
+
+    seat_electric_adjustment = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='seat_electric_adjustments'
+    )
+
+    seat_position_memory = models.PositiveSmallIntegerField(
+        'Память положения сидений',
+        choices=SEAT_TYPES,
+        null=True
+    )
+
+    heated_seat = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='heated_seats'
+    )
+
+    seat_ventilation = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='seats_ventilation'
+    )
+
+    front_sport_seats = models.BooleanField('Спортивные передние сиденья', default=False)
+    seat_with_massage = models.BooleanField('Сиденья с массажем', default=False)
+    heated_steering_wheel = models.BooleanField('Обогрев рулевого колеса', default=False)
+    leather_steering_wheel = models.BooleanField('Отделка кожей рулевого колеса', default=False)
+    gear_lever_leather_trim = models.BooleanField('Отделка кожей рычага КПП', default=False)
+    luke = models.BooleanField('Люк', default=False)
+    panoramic_roof = models.BooleanField('Панорамная крыша / лобовое стекло', default=False)
+    ceiling_trim_in_black_fabric = models.BooleanField('Отделка потолка чёрной тканью', default=False)
+    front_center_armrest = models.BooleanField('Передний центральный подлокотник', default=False)
+    third_rear_headrest = models.BooleanField('Третий задний подголовник', default=False)
+    third_row_of_seats = models.BooleanField('Третий ряд сидений', default=False)
+    folding_rear_seats = models.BooleanField('Складывающееся заднее сиденье', default=False)
+    passenger_backrest_folding_function = models.BooleanField(
+        'Функция складывания спинки сиденья пассажира',
+        default=False
+    )
+    folding_table_on_the_backs_of_the_front_seats = models.BooleanField(
+        'Складной столик на спинках передних сидений',
+        default=False
+    )
+    tinted_glass = models.BooleanField('Тонированные стекла', default=False)
+    sun_blinds_in_rear_doors = models.BooleanField('Солнцезащитные шторки в задних дверях', default=False)
+    rear_window_sun_blind = models.BooleanField('Солнцезащитная шторка на заднем стекле', default=False)
+    interior_lighting = models.BooleanField('Декоративная подсветка салона', default=False)
+    decorative_pedals = models.BooleanField('Декоративные накладки на педали', default=False)
+    door_sills = models.BooleanField('Накладки на пороги', default=False)
+
+    suspension = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='suspensions'
+    )
+
+    spare_wheel = models.PositiveSmallIntegerField(
+        'Запасное колесо',
+        choices=SPARE_WHEEL_TYPES,
+        null=True
+    )
+
+    towbar = models.BooleanField('Фаркоп', default=False)
+    crankcase_protection = models.BooleanField('Защита картера', default=False)
+
+    disc_type = models.PositiveSmallIntegerField(
+        'Тип дисков',
+        choices=DISC_TYPES,
+        null=True
+    )
+
+    disc_size = models.PositiveSmallIntegerField(
+        'Размер дисков',
+        choices=DISC_SIZE_TYPES,
+        null=True
+    )
+
+    airbrushing = models.BooleanField('Аэрография', default=False)
+    decorative_moldings = models.BooleanField('Декоративные молдинги', default=False)
+    roof_rails = models.BooleanField('Рейлинги на крыше', default=False)
+
+    audio_system = models.PositiveSmallIntegerField(
+        'Аудиосистема',
+        choices=AUDIO_SYSTEM_TYPES,
+        null=True
+    )
+
+    aux = models.BooleanField('AUX', default=False)
+    bluetooth = models.BooleanField('Bluetooth', default=False)
+    usb = models.BooleanField('USB', default=False)
+    rear_seat_multimedia_system = models.BooleanField('Мультимедиа система для задних пассажиров', default=False)
+    navigation_system = models.BooleanField('Навигационная система', default=False)
+    voice_control = models.BooleanField('Голосовое управление', default=False)
+    android_auto = models.BooleanField('Android Auto', default=False)
+    car_play = models.BooleanField('CarPlay', default=False)
+    yandex_auto = models.BooleanField('Яндекс.Авто', default=False)
+    wireless_charge_for_phone = models.BooleanField('Беспроводная зарядка для смартфона', default=False)
+    socket_12v = models.BooleanField('Розетка 12V', default=False)
+    socket_220v = models.BooleanField('Розетка 220V', default=False)
+
+    power_window = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='power_windows'
+    )
+
+    conditioner = models.PositiveSmallIntegerField(
+        'Кондиционер',
+        choices=CONDITIONER_TYPES,
+        null=True
+    )
+
+    power_steering = models.PositiveSmallIntegerField(
+        'Усилитель руля',
+        choices=POWER_STEERING_TYPES,
+        null=True
+    )
+
+    steering_wheel_adjustment = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='steering_wheel_adjustments'
+    )
+
+    cruise_control = models.PositiveSmallIntegerField(
+        'Круиз-контроль',
+        choices=CRUISE_CONTROL_TYPES,
+    )
+
+    parking_assistance_system = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='parking_assistance_systems'
+    )
+
+    camera = models.PositiveSmallIntegerField(
+        'Камера',
+        choices=CAMERA_TYPES,
+        null=True
+    )
+
+    ob_board_computer = models.BooleanField('Бортовой компьютер', default=False)
+    electronic_dashboard = models.BooleanField('Электронная приборная панель', default=False)
+    head_up_display = models.BooleanField('Проекционный дисплей', default=False)
+    keyless_access_system = models.BooleanField('Система доступа без ключа', default=False)
+    start_engine_by_button = models.BooleanField('Запуск двигателя с кнопки', default=False)
+    start_stop_system = models.BooleanField('Система «старт-стоп»', default=False)
+    remote_engine_start = models.BooleanField('Дистанционный запуск двигателя', default=False)
+    programmable_pre_heater = models.BooleanField('Программируемый предпусковой отопитель', default=False)
+    electric_boot_lid = models.BooleanField('Электропривод крышки багажника', default=False)
+    open_truck_without_hands = models.BooleanField('Открытие багажника без помощи рук', default=False)
+    power_mirrors = models.BooleanField('Электропривод зеркал', default=False)
+    electric_folding_mirrors = models.BooleanField('Электроскладывание зеркал', default=False)
+    multifunctional_steering_wheel = models.BooleanField('Мультифункциональное рулевое колесо', default=False)
+    paddle_shifters = models.BooleanField('Подрулевые лепестки переключения передач', default=False)
+    cooled_glove_box = models.BooleanField('Охлаждаемый перчаточный ящик', default=False)
+    adjustable_pedal_assembly = models.BooleanField('Регулируемый педальный узел', default=False)
+    door_closer = models.BooleanField('Доводчик дверей', default=False)
+    cigarette_lighter_and_ashtray = models.BooleanField('Прикуриватель и пепельница', default=False)
+
+    airbag = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='airbags'
+    )
+
+    isofix_fastening_system = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='isofix_fastening_systems'
+    )
+
+    support_system = models.ManyToManyField(
+        to='cars.MultipleOption',
+        related_name='support_systems'
+    )
+
+    abs = models.BooleanField('Антиблокировочная система (ABS)', default=False)
+    esp = models.BooleanField('Система стабилизации (ESP)', default=False)
+    tire_pressure_sensor = models.BooleanField('Датчик давления в шинах', default=False)
+    rear_door_block = models.BooleanField('Блокировка замков задних дверей', default=False)
+    era_glonass = models.BooleanField('ЭРА-ГЛОНАСС', default=False)
+    armored_body = models.BooleanField('Бронированный кузов', default=False)
