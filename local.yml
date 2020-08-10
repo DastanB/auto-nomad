@@ -45,6 +45,19 @@ services:
     ports:
     - '54322:5432'
 
+  docs:
+    build:
+      context: .
+      dockerfile: ./compose/local/docs/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    volumes:
+      - ./docs:/docs
+      - ./config:/app/config
+      - ./nomad_auto_advert:/app/nomad_auto_advert
+    ports:
+      - "7000:7000"
+
 #  mailhog:
 #    image: mailhog/mailhog:v1.0.0
 #    ports:
