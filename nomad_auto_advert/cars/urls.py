@@ -1,7 +1,8 @@
 from django.urls import path, include
 from nomad_auto_advert.cars.views import CarTypeView, CarMarkView, CarModelView, CarGenerationView, CarSerieView, \
     CarModificationView, CarCharacteristicView, CarCharacteristicValueView, CarEquipmentView, \
-    CarOptionView, CarOptionValueView, CarViewSet, CarDetailView, CarColorView, MultipleOptionView, CustomOptionViewSet
+    CarOptionView, CarOptionValueView, CarViewSet, CarDetailView, CarColorView, MultipleOptionView, CustomOptionViewSet, \
+    CustomOptionListView
 from rest_framework import routers
 
 app_name = 'cars'
@@ -22,6 +23,7 @@ urlpatterns = [
     path('equipment/', CarEquipmentView.as_view()),
     path('options/', CarOptionView.as_view()),
     path('option-values/', CarOptionValueView.as_view()),
+    path('options/list/', CustomOptionListView.as_view()),
 
     path('multiple-options/', MultipleOptionView.as_view()),
 

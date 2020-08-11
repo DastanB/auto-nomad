@@ -119,3 +119,20 @@ class MultipleOptionView(generics.ListAPIView):
 class CustomOptionViewSet(viewsets.ModelViewSet):
     serializer_class = OptionSerializer
     queryset = Option.objects.all()
+
+
+class CustomOptionListView(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request, *args, **kwargs):
+        result = {
+            'Обзор': Option.get_overview_fields(),
+            'Защита от угона': Option.get_anti_theft_fields(),
+            'Салон': Option.get_salon_fields(),
+            'Прочее': Option.get_other_fields(),
+            'Элементы экстерьера': Option.get_exterior_elements(),
+            'Мультимедиа': Option.get_multimedia_fields(),
+            'Комфорт': Option.get_comfort_fields(),
+            'Безопасность': Option.get_safety_fields()
+        }
+        return Response(result)
