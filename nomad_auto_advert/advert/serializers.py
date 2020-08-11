@@ -55,7 +55,7 @@ class AdvertBaseSerializer(serializers.ModelSerializer):
             data = response.json()
             data['car_ext'] = validated_data.get('car_ext')
             self.validate_base_buy(data)
-            car = Car().create_car(data=data)
+            car = Car().create_car(data=data, user=self.context.get('request').user)
             validated_data['car'] = car
         else:
             raise exceptions.NotFound(detail={

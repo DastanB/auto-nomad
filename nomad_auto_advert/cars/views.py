@@ -110,6 +110,13 @@ class CarDetailView(generics.RetrieveAPIView):
         raise exceptions.NotFound('Car with given id not found')
 
 
+class MyCarsViewSet(generics.ListAPIView):
+    serializer_class = CarSerializer
+
+    def get_queryset(self):
+        return Car.objects.filter(profile=self.request.user)
+
+
 class MultipleOptionView(generics.ListAPIView):
     permission_classes = (AllowAny, )
     serializer_class = MultipleOptionSerializer
@@ -119,6 +126,9 @@ class MultipleOptionView(generics.ListAPIView):
 class CustomOptionViewSet(viewsets.ModelViewSet):
     serializer_class = OptionSerializer
     queryset = Option.objects.all()
+
+    def get_queryset(self):
+        return Option.objects.filter(car__profile=self.request.user)
 
 
 class CustomOptionListView(APIView):

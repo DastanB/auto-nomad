@@ -1,38 +1,24 @@
-How To - Project Documentation
+.. Django Sample Project documentation master file, created by
+   sphinx-quickstart.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+Welcome to Django Sample Project's documentation!
 ======================================================================
 
-Get Started
-----------------------------------------------------------------------
+* [Title2](options.md)
 
-Documentation can be written as rst files in the `django_sample_project/docs/_source`.
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
 
-
-To build and serve docs, use the commands:
-    ::
-
-        docker-compose -f local.yml up docs
+   options
 
 
-Changes to files in `docs/_source` will be picked up and reloaded automatically.
 
-`Sphinx <https://www.sphinx-doc.org/>`_ is the tool used to build documentation.
+Indices and tables
+==================
 
-Docstrings to Documentation
-----------------------------------------------------------------------
-
-The sphinx extension `apidoc <https://www.sphinx-doc.org/en/master/man/sphinx-apidoc.html/>`_ is used to automatically document code using signatures and docstrings.
-
-Numpy or Google style docstrings will be picked up from project files and availble for documentation. See the `Napoleon <https://sphinxcontrib-napoleon.readthedocs.io/en/latest/>`_ extension for details.
-
-For an in-use example, see the `page source <_sources/users.rst.txt>`_ for :ref:`users`.
-
-To compile all docstrings automatically into documentation source files, use the command:
-    ::
-
-        make apidocs
-
-
-This can be done in the docker container:
-    ::
-
-        docker run --rm docs make apidocs
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

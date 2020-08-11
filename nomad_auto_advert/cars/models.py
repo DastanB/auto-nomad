@@ -2,7 +2,13 @@ from django.db import models
 
 from nomad_auto_advert.cars.constants import HEADLIGHTS_TYPES, SIGNALING_TYPES, SEAT_COUNT_TYPES, \
     INTERIOR_MATERIAL_TYPES, INTERIOR_COLOR_TYPES, SEAT_TYPES, SPARE_WHEEL_TYPES, DISC_TYPES, DISC_SIZE_TYPES, \
-    AUDIO_SYSTEM_TYPES, CONDITIONER_TYPES, POWER_STEERING_TYPES, CRUISE_CONTROL_TYPES, CAMERA_TYPES
+    AUDIO_SYSTEM_TYPES, CONDITIONER_TYPES, POWER_STEERING_TYPES, CRUISE_CONTROL_TYPES, CAMERA_TYPES, \
+    overview_single_fields, anti_theft_single_fields, salon_single_fields, overview_choice_fields, \
+    overview_multiple_fields, anti_theft_choice_fields, anti_theft_multiple_fields, salon_choice_fields, \
+    salon_multiple_fields, other_single_fields, other_choice_fields, other_multiple_fields, \
+    exterior_elements_single_fields, exterior_elements_choice_fields, exterior_elements_multiple_fields, \
+    multimedia_single_fields, multimedia_choice_fields, multimedia_multiple_fields, comfort_single_fields, \
+    comfort_choice_fields, comfort_multiple_fields, safety_single_fields, safety_choice_fields, safety_multiple_fields
 from nomad_auto_advert.filters.models import CarBodyType, CarTransmissionType, CarDriveType, CarEngineType
 
 
@@ -154,6 +160,13 @@ class CarColor(models.Model):
 
 
 class Car(models.Model):
+    profile = models.ForeignKey(
+        to='users.Profile',
+        related_name='cars',
+        on_delete=models.SET_NULL,
+        null=True
+    )
+
     car_ext = models.PositiveIntegerField(unique=True, null=True)
     car_type = models.ForeignKey('CarType', related_name='cars', on_delete=models.SET_NULL, null=True)
     car_mark = models.ForeignKey('CarMark', related_name='cars', on_delete=models.SET_NULL, null=True)
@@ -271,8 +284,9 @@ class Car(models.Model):
             if b.exists():
                 self.engine_type = b.first()
 
-    def create_car(self, data):
+    def create_car(self, data, user):
         if data:
+            self.profile = user
             self.car_ext = data.get('car_ext')
             car_type = CarType.objects.filter(ext=data.get('car_type').get('ext'))
             if car_type.exists():
@@ -564,333 +578,110 @@ class Option(models.Model):
 
     @classmethod
     def get_overview_fields(cls):
-        single_fields = {
-            'daytime_running_lights': 'Дневные ходовые огни',
-            'fog_lights': 'Противотуманные фары',
-            'automatic_headlight_range_control': 'Автоматический корректор фар',
-            'headlight_washer': 'Омыватель фар',
-            'adaptive_lighting_system': 'Система адаптивного освещения',
-            'high_beam_control_system': 'Система управления дальним светом',
-            'rain_sensor': 'Датчик дождя',
-            'light_sensor': 'Датчик света'
-        }
-
-        choice_fields = {
-            'headlights': {
-                'name_ru': 'Фары',
-                'fields': HEADLIGHTS_TYPES
-                }
-            }
-
         electric_heating = MultipleOption.objects.filter(separator_id=1)
         electric_heating_objects = {x.id: x.name for x in electric_heating}
-
-        multiple_fields = {
-            'electric_heating': {
-                'name_ru': 'Электрообогрев',
-                'fields': electric_heating_objects
-            }
-        }
+        overview_multiple_fields['electric_heating']['fields'] = electric_heating_objects
 
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': overview_single_fields,
+            'choice_fields': overview_choice_fields,
+            'multiple_fields': overview_multiple_fields
         }
         return result
 
     @classmethod
     def get_anti_theft_fields(cls):
-        single_fields = {
-            'central_locking': 'Центральный замок',
-            'immobilizer': 'Иммобилайзер',
-            'interior_penetration_sensor': 'Датчик проникновения в салон (датчик объема)',
-        }
-        choice_fields = {
-            'signaling': {
-                'name_ru': 'Сигнализация',
-                'fields': SIGNALING_TYPES
-            }
-        }
-        multiple_fields = {}
-
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': anti_theft_single_fields,
+            'choice_fields': anti_theft_choice_fields,
+            'multiple_fields': anti_theft_multiple_fields
         }
         return result
 
     @classmethod
     def get_salon_fields(cls):
-        single_fields = {
-            'front_sport_seats': 'Спортивные передние сиденья',
-            'seat_with_massage': 'Сиденья с массажем',
-            'heated_steering_wheel': 'Обогрев рулевого колеса',
-            'leather_steering_wheel': 'Отделка кожей рулевого колеса',
-            'gear_lever_leather_trim': 'Отделка кожей рычага КПП',
-            'luke': 'Люк',
-            'panoramic_roof': 'Панорамная крыша / лобовое стекло',
-            'ceiling_trim_in_black_fabric': 'Отделка потолка чёрной тканью',
-            'front_center_armrest': 'Передний центральный подлокотник',
-            'third_rear_headrest': 'Третий задний подголовник',
-            'third_row_of_seats': 'Третий ряд сидений',
-            'folding_rear_seats': 'Складывающееся заднее сиденье',
-            'passenger_backrest_folding_function': 'Функция складывания спинки сиденья пассажира',
-            'folding_table_on_the_backs_of_the_front_seats': 'Складной столик на спинках передних сидений',
-            'tinted_glass': 'Тонированные стекла',
-            'sun_blinds_in_rear_doors': 'Солнцезащитные шторки в задних дверях',
-            'rear_window_sun_blind': 'Солнцезащитная шторка на заднем стекле',
-            'interior_lighting': 'Декоративная подсветка салона',
-            'decorative_pedals': 'Декоративные накладки на педали',
-            'door_sills': 'Накладки на пороги',
-        }
-        choice_fields = {
-            'seat_count': {
-                'name_ru': 'Количество мест',
-                'fields': SEAT_COUNT_TYPES
-            },
-            'interior_material': {
-                'name_ru': 'Материал салона',
-                'fields': INTERIOR_MATERIAL_TYPES
-            },
-            'interior_color': {
-                'name_ru': 'Цвет салона',
-                'fields': INTERIOR_COLOR_TYPES
-            },
-            'seat_height_adjustment': {
-                'name_ru': 'Регулировка сидений по высоте',
-                'fields': SEAT_TYPES
-            },
-            'seat_position_memory': {
-                'name_ru': 'Память положения сидений',
-                'fields': SEAT_TYPES
-            }
-        }
-
         seat_electric_adjustment = MultipleOption.objects.filter(separator_id=2)
         seat_electric_adjustment_objects = {x.id: x.name for x in seat_electric_adjustment}
         heated_seat = MultipleOption.objects.filter(separator_id=3)
         heated_seat_objects = {x.id: x.name for x in heated_seat}
         seat_ventilation = MultipleOption.objects.filter(separator_id=4)
         seat_ventilation_objects = {x.id: x.name for x in seat_ventilation}
-
-        multiple_fields = {
-            'seat_electric_adjustment': {
-                'name_ru': 'Электрорегулировка сидений',
-                'fields': seat_electric_adjustment_objects
-            },
-            'heated_seat': {
-                'name_ru': 'Подогрев сидений',
-                'fields': heated_seat_objects
-            },
-            'seat_ventilation': {
-                'name_ru': 'Вентиляция сидений',
-                'fields': seat_ventilation_objects
-            }
-        }
+        salon_multiple_fields['seat_electric_adjustment']['fields'] = seat_electric_adjustment_objects
+        salon_multiple_fields['heated_seat']['fields'] = heated_seat_objects
+        salon_multiple_fields['seat_ventilation']['fields'] = seat_ventilation_objects
 
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': salon_single_fields,
+            'choice_fields': salon_choice_fields,
+            'multiple_fields': salon_multiple_fields
         }
         return result
 
     @classmethod
     def get_other_fields(cls):
-        single_fields = {
-            'towbar': 'Фаркоп',
-            'crankcase_protection': 'Защита картера',
-        }
-        choice_fields = {
-            'spare_wheel': {
-                'name_ru': 'Запасное колесо',
-                'fields': SPARE_WHEEL_TYPES
-            }
-        }
-
         suspension = MultipleOption.objects.filter(separator_id=5)
         suspension_objects = {x.id: x.name for x in suspension}
-
-        multiple_fields = {
-            'suspension': {
-                'name_ru': 'Подвеска',
-                'fields': suspension_objects
-            }
-        }
+        other_multiple_fields['suspension']['fields'] = suspension_objects
 
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': other_single_fields,
+            'choice_fields': other_choice_fields,
+            'multiple_fields': other_multiple_fields
         }
         return result
 
     @classmethod
     def get_exterior_elements(cls):
-        single_fields = {
-            'airbrushing': 'Аэрография',
-            'decorative_moldings': 'Декоративные молдинги',
-            'roof_rails': 'Рейлинги на крыше',
-        }
-        choice_fields = {
-            'disc_type': {
-                'name_ru': 'Тип дисков',
-                'fields': DISC_TYPES
-            },
-            'disc_size': {
-                'name_ru': 'Размер дисков',
-                'fields': DISC_SIZE_TYPES
-            }
-        }
-        multiple_fields = {}
-
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': exterior_elements_single_fields,
+            'choice_fields': exterior_elements_choice_fields,
+            'multiple_fields': exterior_elements_multiple_fields
         }
         return result
 
     @classmethod
     def get_multimedia_fields(cls):
-        single_fields = {
-            'aux': 'AUX',
-            'bluetooth': 'Bluetooth',
-            'usb': 'USB',
-            'rear_seat_multimedia_system': 'Мультимедиа система для задних пассажиров',
-            'navigation_system': 'Навигационная система',
-            'voice_control': 'Голосовое управление',
-            'android_auto': 'Android Auto',
-            'car_play': 'CarPlay',
-            'yandex_auto': 'Яндекс.Авто',
-            'wireless_charge_for_phone': 'Беспроводная зарядка для смартфона',
-            'socket_12v': 'Розетка 12V',
-            'socket_220v': 'Розетка 220V',
-        }
-        choice_fields = {
-            'audio_system': {
-                'name_ru': 'Аудиосистема',
-                'fields': AUDIO_SYSTEM_TYPES
-            }
-        }
-        multiple_fields = {}
-
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': multimedia_single_fields,
+            'choice_fields': multimedia_choice_fields,
+            'multiple_fields': multimedia_multiple_fields
         }
         return result
 
     @classmethod
     def get_comfort_fields(cls):
-        single_fields = {
-            "ob_board_computer": "Бортовой компьютер",
-            "electronic_dashboard": "Электронная приборная панель",
-            "head_up_display": "Проекционный дисплей",
-            "keyless_access_system": "Система доступа без ключа",
-            "start_engine_by_button": "Запуск двигателя с кнопки",
-            "start_stop_system": "Система «старт-стоп»",
-            "remote_engine_start": "Дистанционный запуск двигателя",
-            "programmable_pre_heater": "Программируемый предпусковой отопитель",
-            "electric_boot_lid": "Электропривод крышки багажника",
-            "open_truck_without_hands": "Открытие багажника без помощи рук",
-            "power_mirrors": "Электропривод зеркал",
-            "electric_folding_mirrors": "Электроскладывание зеркал",
-            "multifunctional_steering_wheel": "Мультифункциональное рулевое колесо",
-            "paddle_shifters": "Подрулевые лепестки переключения передач",
-            "cooled_glove_box": "Охлаждаемый перчаточный ящик",
-            "adjustable_pedal_assembly": "Регулируемый педальный узел",
-            "door_closer": "Доводчик дверей",
-            "cigarette_lighter_and_ashtray": "Прикуриватель и пепельница",
-        }
-        choice_fields = {
-            'conditioner': {
-                'name_ru': 'Кондиционер',
-                'fields': CONDITIONER_TYPES
-            },
-            'power_steering': {
-                'name_ru': 'Усилитель руля',
-                'fields': POWER_STEERING_TYPES
-            },
-            'cruise_control': {
-                'name_ru': 'Круиз-контроль',
-                'fields': CRUISE_CONTROL_TYPES
-            },
-            'camera': {
-                'name_ru': 'Камера',
-                'fields': CAMERA_TYPES
-            }
-        }
-
         power_window = MultipleOption.objects.filter(separator_id=6)
         power_window_objects = {x.id: x.name for x in power_window}
         steering_wheel_adjustment = MultipleOption.objects.filter(separator_id=7)
         steering_wheel_adjustment_objects = {x.id: x.name for x in steering_wheel_adjustment}
         parking_assistance_system = MultipleOption.objects.filter(separator_id=8)
         parking_assistance_system_objects = {x.id: x.name for x in parking_assistance_system}
-
-        multiple_fields = {
-            'power_window': {
-                'name_ru': 'Электростеклоподъёмники',
-                'fields': power_window_objects
-            },
-            'steering_wheel_adjustment': {
-                'name_ru': 'Регулировка руля',
-                'fields': steering_wheel_adjustment_objects
-            },
-            'parking_assistance_system': {
-                'name_ru': 'Система помощи при парковке',
-                'fields': parking_assistance_system_objects
-            }
-        }
+        comfort_multiple_fields['power_window']['fields'] = power_window_objects
+        comfort_multiple_fields['steering_wheel_adjustment']['fields'] = steering_wheel_adjustment_objects
+        comfort_multiple_fields['parking_assistance_system']['fields'] = parking_assistance_system_objects
 
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': comfort_single_fields,
+            'choice_fields': comfort_choice_fields,
+            'multiple_fields': comfort_multiple_fields
         }
         return result
 
     @classmethod
     def get_safety_fields(cls):
-        single_fields = {
-            "abs": "Антиблокировочная система (ABS)",
-            "esp": "Система стабилизации (ESP)",
-            "tire_pressure_sensor": "Датчик давления в шинах",
-            "rear_door_block": "Блокировка замков задних дверей",
-            "era_glonass": "ЭРА-ГЛОНАСС",
-            "armored_body": "Бронированный кузов",
-        }
-        choice_fields = {}
-
         airbag = MultipleOption.objects.filter(separator_id=9)
         airbag_objects = {x.id: x.name for x in airbag}
         isofix_fastening_system = MultipleOption.objects.filter(separator_id=10)
         isofix_fastening_system_objects = {x.id: x.name for x in isofix_fastening_system}
         support_system = MultipleOption.objects.filter(separator_id=11)
         support_system_objects = {x.id: x.name for x in support_system}
-
-        multiple_fields = {
-            'airbag': {
-                'name_ru': 'Подушки безопасности',
-                'fields': airbag_objects
-            },
-            'isofix_fastening_system': {
-                'name_ru': 'Система крепления Isofix',
-                'fields': isofix_fastening_system_objects
-            },
-            'support_system': {
-                'name_ru': 'Вспомогательные системы',
-                'fields': support_system_objects
-            }
-        }
+        safety_multiple_fields['airbag']['fields'] = airbag_objects
+        safety_multiple_fields['isofix_fastening_system']['fields'] = isofix_fastening_system_objects
+        safety_multiple_fields['support_system']['fields'] = support_system_objects
 
         result = {
-            'single_fields': single_fields,
-            'choice_fields': choice_fields,
-            'multiple_fields': multiple_fields
+            'single_fields': safety_single_fields,
+            'choice_fields': safety_choice_fields,
+            'multiple_fields': safety_multiple_fields
         }
         return result
