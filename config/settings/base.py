@@ -64,13 +64,11 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     "corsheaders",
-    "crispy_forms",
-    "allauth",
-    "allauth.account",
-    "allauth.socialaccount",
     "rest_framework",
     "rest_framework.authtoken",
-    "reversion",
+    "django_filters",
+    "rest_framework_swagger",
+    "drf_yasg",
 ]
 LOCAL_APPS = [
     "nomad_auto_advert.users.apps.UsersAppConfig",

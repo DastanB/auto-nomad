@@ -51,12 +51,6 @@ DEFAULT_FROM_EMAIL = 'Noreply <noreply@auto-nomad.kz>'
 #     'silk.middleware.SilkyMiddleware',
 # ]
 
-
-INSTALLED_APPS += [
-    "drf_yasg",
-    # 'silk'
-]
-
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites

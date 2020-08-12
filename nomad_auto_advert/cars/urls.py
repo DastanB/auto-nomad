@@ -23,7 +23,7 @@ urlpatterns = [
     path('equipment/', CarEquipmentView.as_view()),
     path('options/', CarOptionView.as_view()),
     path('option-values/', CarOptionValueView.as_view()),
-    path('options/list/', CustomOptionListView.as_view()),
+    path('custom-options/readable/', CustomOptionListView.as_view()),
 
     path('multiple-options/', MultipleOptionView.as_view()),
 
