@@ -3,12 +3,12 @@ from django.db import models
 from nomad_auto_advert.cars.constants import HEADLIGHTS_TYPES, SIGNALING_TYPES, SEAT_COUNT_TYPES, \
     INTERIOR_MATERIAL_TYPES, INTERIOR_COLOR_TYPES, SEAT_TYPES, SPARE_WHEEL_TYPES, DISC_TYPES, DISC_SIZE_TYPES, \
     AUDIO_SYSTEM_TYPES, CONDITIONER_TYPES, POWER_STEERING_TYPES, CRUISE_CONTROL_TYPES, CAMERA_TYPES, \
-    overview_single_fields, anti_theft_single_fields, salon_single_fields, overview_choice_fields, \
-    overview_multiple_fields, anti_theft_choice_fields, anti_theft_multiple_fields, salon_choice_fields, \
-    salon_multiple_fields, other_single_fields, other_choice_fields, other_multiple_fields, \
-    exterior_elements_single_fields, exterior_elements_choice_fields, exterior_elements_multiple_fields, \
-    multimedia_single_fields, multimedia_choice_fields, multimedia_multiple_fields, comfort_single_fields, \
-    comfort_choice_fields, comfort_multiple_fields, safety_single_fields, safety_choice_fields, safety_multiple_fields
+    OVERVIEW_SINGLE_FIELDS, ANTI_THEFT_SINGLE_FIELDS, SALON_SINGLE_FIELDS, OVERVIEW_CHOICE_FIELDS, \
+    OVERVIEW_MULTIPLE_FIELDS, ANTI_THEFT_CHOICE_FIELDS, ANTI_THEFT_MULTIPLE_FIELDS, SALON_CHOICE_FIELDS, \
+    SALON_MULTIPLE_FIELDS, OTHER_SINGLE_FIELDS, OTHER_CHOICE_FIELDS, OTHER_MULTIPLE_FIELDS, \
+    EXTERIOR_ELEMENTS_SINGLE_FIELDS, EXTERIOR_ELEMENTS_CHOICE_FIELDS, EXTERIOR_ELEMENTS_MULTIPLE_FIELDS, \
+    MULTIMEDIA_SINGLE_FIELDS, MULTIMEDIA_CHOICE_FIELDS, MULTIMEDIA_MULTIPLE_FIELDS, COMFORT_SINGLE_FIELDS, \
+    COMFORT_CHOICE_FIELDS, COMFORT_MULTIPLE_FIELDS, SAFETY_SINGLE_FIELDS, SAFETY_CHOICE_FIELDS, SAFETY_MULTIPLE_FIELDS
 from nomad_auto_advert.filters.models import CarBodyType, CarTransmissionType, CarDriveType, CarEngineType
 
 
@@ -344,7 +344,12 @@ class MultipleOption(models.Model):
 
 
 class Option(models.Model):
-    car = models.ForeignKey('cars.Car', related_name='options', on_delete=models.CASCADE, null=True)
+    car = models.OneToOneField(
+        to='cars.Car',
+        related_name='options',
+        on_delete=models.CASCADE,
+        null=True
+    )
 
     headlights = models.PositiveSmallIntegerField(
         'Фары',
@@ -580,21 +585,21 @@ class Option(models.Model):
     def get_overview_fields(cls):
         electric_heating = MultipleOption.objects.filter(separator_id=1)
         electric_heating_objects = {x.id: x.name for x in electric_heating}
-        overview_multiple_fields['electric_heating']['fields'] = electric_heating_objects
+        OVERVIEW_MULTIPLE_FIELDS['electric_heating']['fields'] = electric_heating_objects
 
         result = {
-            'single_fields': overview_single_fields,
-            'choice_fields': overview_choice_fields,
-            'multiple_fields': overview_multiple_fields
+            'single_fields': OVERVIEW_SINGLE_FIELDS,
+            'choice_fields': OVERVIEW_CHOICE_FIELDS,
+            'multiple_fields': OVERVIEW_MULTIPLE_FIELDS
         }
         return result
 
     @classmethod
     def get_anti_theft_fields(cls):
         result = {
-            'single_fields': anti_theft_single_fields,
-            'choice_fields': anti_theft_choice_fields,
-            'multiple_fields': anti_theft_multiple_fields
+            'single_fields': ANTI_THEFT_SINGLE_FIELDS,
+            'choice_fields': ANTI_THEFT_CHOICE_FIELDS,
+            'multiple_fields': ANTI_THEFT_MULTIPLE_FIELDS
         }
         return result
 
@@ -606,14 +611,14 @@ class Option(models.Model):
         heated_seat_objects = {x.id: x.name for x in heated_seat}
         seat_ventilation = MultipleOption.objects.filter(separator_id=4)
         seat_ventilation_objects = {x.id: x.name for x in seat_ventilation}
-        salon_multiple_fields['seat_electric_adjustment']['fields'] = seat_electric_adjustment_objects
-        salon_multiple_fields['heated_seat']['fields'] = heated_seat_objects
-        salon_multiple_fields['seat_ventilation']['fields'] = seat_ventilation_objects
+        SALON_MULTIPLE_FIELDS['seat_electric_adjustment']['fields'] = seat_electric_adjustment_objects
+        SALON_MULTIPLE_FIELDS['heated_seat']['fields'] = heated_seat_objects
+        SALON_MULTIPLE_FIELDS['seat_ventilation']['fields'] = seat_ventilation_objects
 
         result = {
-            'single_fields': salon_single_fields,
-            'choice_fields': salon_choice_fields,
-            'multiple_fields': salon_multiple_fields
+            'single_fields': SALON_SINGLE_FIELDS,
+            'choice_fields': SALON_CHOICE_FIELDS,
+            'multiple_fields': SALON_MULTIPLE_FIELDS
         }
         return result
 
@@ -621,30 +626,30 @@ class Option(models.Model):
     def get_other_fields(cls):
         suspension = MultipleOption.objects.filter(separator_id=5)
         suspension_objects = {x.id: x.name for x in suspension}
-        other_multiple_fields['suspension']['fields'] = suspension_objects
+        OTHER_MULTIPLE_FIELDS['suspension']['fields'] = suspension_objects
 
         result = {
-            'single_fields': other_single_fields,
-            'choice_fields': other_choice_fields,
-            'multiple_fields': other_multiple_fields
+            'single_fields': OTHER_SINGLE_FIELDS,
+            'choice_fields': OTHER_CHOICE_FIELDS,
+            'multiple_fields': OTHER_MULTIPLE_FIELDS
         }
         return result
 
     @classmethod
     def get_exterior_elements(cls):
         result = {
-            'single_fields': exterior_elements_single_fields,
-            'choice_fields': exterior_elements_choice_fields,
-            'multiple_fields': exterior_elements_multiple_fields
+            'single_fields': EXTERIOR_ELEMENTS_SINGLE_FIELDS,
+            'choice_fields': EXTERIOR_ELEMENTS_CHOICE_FIELDS,
+            'multiple_fields': EXTERIOR_ELEMENTS_MULTIPLE_FIELDS
         }
         return result
 
     @classmethod
     def get_multimedia_fields(cls):
         result = {
-            'single_fields': multimedia_single_fields,
-            'choice_fields': multimedia_choice_fields,
-            'multiple_fields': multimedia_multiple_fields
+            'single_fields': MULTIMEDIA_SINGLE_FIELDS,
+            'choice_fields': MULTIMEDIA_CHOICE_FIELDS,
+            'multiple_fields': MULTIMEDIA_MULTIPLE_FIELDS
         }
         return result
 
@@ -656,14 +661,14 @@ class Option(models.Model):
         steering_wheel_adjustment_objects = {x.id: x.name for x in steering_wheel_adjustment}
         parking_assistance_system = MultipleOption.objects.filter(separator_id=8)
         parking_assistance_system_objects = {x.id: x.name for x in parking_assistance_system}
-        comfort_multiple_fields['power_window']['fields'] = power_window_objects
-        comfort_multiple_fields['steering_wheel_adjustment']['fields'] = steering_wheel_adjustment_objects
-        comfort_multiple_fields['parking_assistance_system']['fields'] = parking_assistance_system_objects
+        COMFORT_MULTIPLE_FIELDS['power_window']['fields'] = power_window_objects
+        COMFORT_MULTIPLE_FIELDS['steering_wheel_adjustment']['fields'] = steering_wheel_adjustment_objects
+        COMFORT_MULTIPLE_FIELDS['parking_assistance_system']['fields'] = parking_assistance_system_objects
 
         result = {
-            'single_fields': comfort_single_fields,
-            'choice_fields': comfort_choice_fields,
-            'multiple_fields': comfort_multiple_fields
+            'single_fields': COMFORT_SINGLE_FIELDS,
+            'choice_fields': COMFORT_CHOICE_FIELDS,
+            'multiple_fields': COMFORT_MULTIPLE_FIELDS
         }
         return result
 
@@ -675,13 +680,13 @@ class Option(models.Model):
         isofix_fastening_system_objects = {x.id: x.name for x in isofix_fastening_system}
         support_system = MultipleOption.objects.filter(separator_id=11)
         support_system_objects = {x.id: x.name for x in support_system}
-        safety_multiple_fields['airbag']['fields'] = airbag_objects
-        safety_multiple_fields['isofix_fastening_system']['fields'] = isofix_fastening_system_objects
-        safety_multiple_fields['support_system']['fields'] = support_system_objects
+        SAFETY_MULTIPLE_FIELDS['airbag']['fields'] = airbag_objects
+        SAFETY_MULTIPLE_FIELDS['isofix_fastening_system']['fields'] = isofix_fastening_system_objects
+        SAFETY_MULTIPLE_FIELDS['support_system']['fields'] = support_system_objects
 
         result = {
-            'single_fields': safety_single_fields,
-            'choice_fields': safety_choice_fields,
-            'multiple_fields': safety_multiple_fields
+            'single_fields': SAFETY_SINGLE_FIELDS,
+            'choice_fields': SAFETY_CHOICE_FIELDS,
+            'multiple_fields': SAFETY_MULTIPLE_FIELDS
         }
         return result

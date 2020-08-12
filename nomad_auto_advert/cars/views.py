@@ -3,6 +3,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from nomad_auto_advert.advert.utils import make_car_custom_options_json
 from nomad_auto_advert.cars.filters import CarMarkFilter, CarModelFilter, CarGenerationFilter, CarSerieFilter, \
     CarModificationFilter, CarCharacteristicFilter, CarCharacteristicValueFilter, CarOptionValueFilter, CarOptionFilter, \
     CarEquipmentFilter
@@ -146,3 +147,13 @@ class CustomOptionListView(APIView):
             'Безопасность': Option.get_safety_fields()
         }
         return Response(result)
+
+
+class CarCustomOptionsView(APIView):
+    permission_classes = (AllowAny, )
+
+    def get(self, request, *args, **kwargs):
+        options = Option.objects.filter(car=self.kwargs.get('car_id')).first()
+        if options is not None:
+            result = make_car_custom_options_json(options)
+            return Response(result)

@@ -113,7 +113,7 @@ CAMERA_TYPES = (
     (CAMERA_360, '360°'),
 )
 
-overview_single_fields = {
+OVERVIEW_SINGLE_FIELDS = {
     'daytime_running_lights': 'Дневные ходовые огни',
     'fog_lights': 'Противотуманные фары',
     'automatic_headlight_range_control': 'Автоматический корректор фар',
@@ -123,33 +123,33 @@ overview_single_fields = {
     'rain_sensor': 'Датчик дождя',
     'light_sensor': 'Датчик света'
 }
-overview_choice_fields = {
+OVERVIEW_CHOICE_FIELDS = {
     'headlights': {
         'name_ru': 'Фары',
         'fields': HEADLIGHTS_TYPES
     }
 }
-overview_multiple_fields = {
+OVERVIEW_MULTIPLE_FIELDS = {
     'electric_heating': {
         'name_ru': 'Электрообогрев',
         'fields': None
     }
 }
 
-anti_theft_single_fields = {
+ANTI_THEFT_SINGLE_FIELDS = {
     'central_locking': 'Центральный замок',
     'immobilizer': 'Иммобилайзер',
     'interior_penetration_sensor': 'Датчик проникновения в салон (датчик объема)',
 }
-anti_theft_choice_fields = {
+ANTI_THEFT_CHOICE_FIELDS = {
     'signaling': {
         'name_ru': 'Сигнализация',
         'fields': SIGNALING_TYPES
     }
 }
-anti_theft_multiple_fields = {}
+ANTI_THEFT_MULTIPLE_FIELDS = {}
 
-salon_single_fields = {
+SALON_SINGLE_FIELDS = {
     'front_sport_seats': 'Спортивные передние сиденья',
     'seat_with_massage': 'Сиденья с массажем',
     'heated_steering_wheel': 'Обогрев рулевого колеса',
@@ -171,7 +171,7 @@ salon_single_fields = {
     'decorative_pedals': 'Декоративные накладки на педали',
     'door_sills': 'Накладки на пороги',
 }
-salon_choice_fields = {
+SALON_CHOICE_FIELDS = {
     'seat_count': {
         'name_ru': 'Количество мест',
         'fields': SEAT_COUNT_TYPES
@@ -193,7 +193,7 @@ salon_choice_fields = {
         'fields': SEAT_TYPES
     }
 }
-salon_multiple_fields = {
+SALON_MULTIPLE_FIELDS = {
     'seat_electric_adjustment': {
         'name_ru': 'Электрорегулировка сидений',
         'fields': None
@@ -208,29 +208,29 @@ salon_multiple_fields = {
     }
 }
 
-other_single_fields = {
+OTHER_SINGLE_FIELDS = {
     'towbar': 'Фаркоп',
     'crankcase_protection': 'Защита картера',
 }
-other_choice_fields = {
+OTHER_CHOICE_FIELDS = {
     'spare_wheel': {
         'name_ru': 'Запасное колесо',
         'fields': SPARE_WHEEL_TYPES
     }
 }
-other_multiple_fields = {
+OTHER_MULTIPLE_FIELDS = {
     'suspension': {
         'name_ru': 'Подвеска',
         'fields': None
     }
 }
 
-exterior_elements_single_fields = {
+EXTERIOR_ELEMENTS_SINGLE_FIELDS = {
     'airbrushing': 'Аэрография',
     'decorative_moldings': 'Декоративные молдинги',
     'roof_rails': 'Рейлинги на крыше',
 }
-exterior_elements_choice_fields = {
+EXTERIOR_ELEMENTS_CHOICE_FIELDS = {
     'disc_type': {
         'name_ru': 'Тип дисков',
         'fields': DISC_TYPES
@@ -240,9 +240,9 @@ exterior_elements_choice_fields = {
         'fields': DISC_SIZE_TYPES
     }
 }
-exterior_elements_multiple_fields = {}
+EXTERIOR_ELEMENTS_MULTIPLE_FIELDS = {}
 
-multimedia_single_fields = {
+MULTIMEDIA_SINGLE_FIELDS = {
     'aux': 'AUX',
     'bluetooth': 'Bluetooth',
     'usb': 'USB',
@@ -256,15 +256,15 @@ multimedia_single_fields = {
     'socket_12v': 'Розетка 12V',
     'socket_220v': 'Розетка 220V',
 }
-multimedia_choice_fields = {
+MULTIMEDIA_CHOICE_FIELDS = {
     'audio_system': {
         'name_ru': 'Аудиосистема',
         'fields': AUDIO_SYSTEM_TYPES
     }
 }
-multimedia_multiple_fields = {}
+MULTIMEDIA_MULTIPLE_FIELDS = {}
 
-comfort_single_fields = {
+COMFORT_SINGLE_FIELDS = {
     "ob_board_computer": "Бортовой компьютер",
     "electronic_dashboard": "Электронная приборная панель",
     "head_up_display": "Проекционный дисплей",
@@ -284,7 +284,7 @@ comfort_single_fields = {
     "door_closer": "Доводчик дверей",
     "cigarette_lighter_and_ashtray": "Прикуриватель и пепельница",
 }
-comfort_choice_fields = {
+COMFORT_CHOICE_FIELDS = {
     'conditioner': {
         'name_ru': 'Кондиционер',
         'fields': CONDITIONER_TYPES
@@ -302,7 +302,7 @@ comfort_choice_fields = {
         'fields': CAMERA_TYPES
     }
 }
-comfort_multiple_fields = {
+COMFORT_MULTIPLE_FIELDS = {
     'power_window': {
         'name_ru': 'Электростеклоподъёмники',
         'fields': None
@@ -317,7 +317,7 @@ comfort_multiple_fields = {
     }
 }
 
-safety_single_fields = {
+SAFETY_SINGLE_FIELDS = {
     "abs": "Антиблокировочная система (ABS)",
     "esp": "Система стабилизации (ESP)",
     "tire_pressure_sensor": "Датчик давления в шинах",
@@ -325,8 +325,8 @@ safety_single_fields = {
     "era_glonass": "ЭРА-ГЛОНАСС",
     "armored_body": "Бронированный кузов",
 }
-safety_choice_fields = {}
-safety_multiple_fields = {
+SAFETY_CHOICE_FIELDS = {}
+SAFETY_MULTIPLE_FIELDS = {
     'airbag': {
         'name_ru': 'Подушки безопасности',
         'fields': None

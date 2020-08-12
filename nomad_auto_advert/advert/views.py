@@ -34,7 +34,11 @@ class AdvertViewSet(MultiSerializerViewSetMixin,
         return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
-        return self.queryset.filter(user=self.request.user)
+        return self.queryset.filter(user=self.request.user).select_related(
+            'car',
+            'car__body_type', 'car__drive_type', 'car__transmission_type', 'car__engine_type',
+            'car__car_mark', 'car__car_model', 'car__car_generation', 'car__car_serie', 'car__car_modification'
+        )
 
 
 class AdvertImageViewSet(MultiSerializerViewSetMixin,
@@ -80,10 +84,8 @@ class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         return Advert.objects.all().select_related(
             'car',
-            'car__body_type',
-            'car__drive_type',
-            'car__transmission_type',
-            'car__engine_type'
+            'car__body_type', 'car__drive_type', 'car__transmission_type', 'car__engine_type',
+            'car__car_mark', 'car__car_model', 'car__car_generation', 'car__car_serie', 'car__car_modification'
         )
 
     def get_object(self):
