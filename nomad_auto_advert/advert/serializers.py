@@ -88,6 +88,9 @@ class AdvertSerializer(AdvertBaseSerializer):
     car = CarSerializer(read_only=True)
     city = CitySerializer(read_only=True)
 
+    class Meta(AdvertBaseSerializer.Meta):
+        fields = AdvertBaseSerializer.Meta.fields + ('created_at', 'updated_at')
+
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):
     class Meta:

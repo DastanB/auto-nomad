@@ -5,7 +5,7 @@ from rest_framework import generics, viewsets, status
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
-from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION
+from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION, ADVERT_SORTING_DESCRIPTION
 from nomad_auto_advert.advert.filters import AdvertImageFilter, CarBodyStateFilter, AdvertSearchFilter
 from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, AdvertComplaint
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
@@ -92,6 +92,10 @@ class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
         obj = super(AdvertSearchView, self).get_object()
         obj.increment_views_count()
         return obj
+
+    @swagger_auto_schema(operation_description=ADVERT_SORTING_DESCRIPTION)
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
 
 
 class AdvertFavouriteView(MultiSerializerViewSetMixin,

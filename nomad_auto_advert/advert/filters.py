@@ -36,7 +36,7 @@ class AdvertSearchFilter(filters.FilterSet):
     power_end = filters.CharFilter(method='engine_power_gte')                           # Мощность л.с.
     mileage_begin = filters.CharFilter(method='mileage_begin_gte')                      # Пробег
     mileage_end = filters.CharFilter(method='mileage_end_lte')                          # Пробег
-    color = filters.NumberFilter(method="filter_by_color")
+    color = filters.CharFilter(method="filter_by_color")
     trunk_volume_begin = filters.CharFilter(method='trunk_volume_gte')                  # обьем багажа литр
     clearance_begin = filters.CharFilter(method='road_clearance_gte')                   # клиренс мм
     acceleration_begin = filters.CharFilter(method='acceleration_gte')                  # ускорение сек
@@ -51,6 +51,8 @@ class AdvertSearchFilter(filters.FilterSet):
     cleared_by_customs = filters.BooleanFilter(method="filter_cleared_by_customs")      # Растоможен
     exchange = filters.BooleanFilter(method="filter_exchange")                          # Обмен
     condition_type = filters.NumberFilter(method="filter_condition_type")               # Состояние авто
+
+    sort_by = filters.NumberFilter(method='sort_by_number')
 
     def filter_by_mark(self, queryset, value, *args, **kwargs):
         ext = args[0]
@@ -127,8 +129,8 @@ class AdvertSearchFilter(filters.FilterSet):
         return queryset.filter(car__engine_power__lte=power)
 
     def filter_by_color(self, queryset, value, *args, **kwargs):
-        color = args[0]
-        return queryset.filter(car__car_color=color)
+        colors = args[0].split(",")
+        return queryset.filter(car__car_color__in=colors)
 
     def trunk_volume_gte(self, queryset, value, *args, **kwargs):
         volume = args[0]
@@ -187,3 +189,20 @@ class AdvertSearchFilter(filters.FilterSet):
     def filter_condition_type(self, queryset, value, *args, **kwargs):
         type = args[0]
         return queryset.filter(car_condition_type=type)
+
+    def sort_by_number(self, queryset, value, *args, **kwargs):
+        number = args[0]
+        if number == 1:
+            return queryset.order_by('-created_at')
+        if number == 2:
+            return queryset.order_by('price')
+        if number == 3:
+            return queryset.order_by('-price')
+        if number == 4:
+            return queryset.order_by('-car__year')
+        if number == 5:
+            return queryset.order_by('car__year')
+        if number == 6:
+            return queryset.order_by('price', '-car__year')
+        if number == 7:
+            return queryset.order_by('car__mileage')

@@ -9,3 +9,14 @@ ADVERT_CREATE_DESCRIPTION = """
         0 = (RIGHT, 'Справа')
         1 = (LEFT, 'Слева')
 """
+
+ADVERT_SORTING_DESCRIPTION = """
+    Sorting Description:
+        1 - Дате размещения
+        2 - Возрастания цены
+        3 - Убыванию цены
+        4 - Году: Новее
+        5 - Году: Старше
+        5 - По цене и году
+        5 - Пробегу
+"""
