@@ -168,3 +168,17 @@ class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
         fields = "__all__"
+
+
+class CarCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Car
+        fields = ('id', 'car_type', 'car_mark', 'car_model',
+                  'car_generation', 'car_serie', 'car_modification',
+                  'car_equipment', 'car_color', 'mileage', 'year')
+
+    def create(self, validated_data):
+        instance = super().create(validated_data)
+        instance.set_all_characteristics()
+        instance.save()
+        return instance

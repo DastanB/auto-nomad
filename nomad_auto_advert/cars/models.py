@@ -193,6 +193,7 @@ class Car(models.Model):
     max_speed = models.FloatField(null=True, blank=True)
     max_torque = models.FloatField(null=True, blank=True)
     fuel_consumption = models.FloatField(null=True, blank=True)
+
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
 
@@ -284,9 +285,24 @@ class Car(models.Model):
             if b.exists():
                 self.engine_type = b.first()
 
+    def set_all_characteristics(self):
+        self.set_body_type()
+        self.set_engine_volume()
+        self.set_engine_power()
+        self.set_transmission_type()
+        self.set_drive_type()
+        self.set_engine_type()
+        self.set_trunk_volume()
+        self.set_road_clearance()
+        self.set_acceleration()
+        self.set_fuel_consumption()
+        self.set_max_speed()
+        self.set_max_torque()
+
     def create_car(self, data, user):
         if data:
             self.profile = user
+
             self.car_ext = data.get('car_ext')
             car_type = CarType.objects.filter(ext=data.get('car_type').get('ext'))
             if car_type.exists():
@@ -315,19 +331,8 @@ class Car(models.Model):
                 self.car_color = car_color.first()
             self.mileage = data.get('mileage')
             self.year = data.get("age")
-            self.set_body_type()
-            self.set_engine_volume()
-            self.set_engine_power()
-            self.set_transmission_type()
-            self.set_drive_type()
-            self.set_engine_type()
-            self.set_trunk_volume()
-            self.set_road_clearance()
-            self.set_acceleration()
-            self.set_fuel_consumption()
-            self.set_max_speed()
-            self.set_max_torque()
 
+            self.set_all_characteristics()
             self.save()
             return self
         print('Car info not found')

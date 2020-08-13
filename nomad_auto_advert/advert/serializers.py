@@ -10,11 +10,15 @@ from nomad_auto_advert.utils.serializers import ChoiceValueDisplayField
 class AdvertBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advert
-        read_only_fields = ('id', 'user', 'car', 'views_count', )
+        read_only_fields = ('id', 'user', 'views_count', )
         fields = read_only_fields + \
-                 ('car_ext', 'car_condition_type', 'cleared_by_customs', 'city',
+                 ('car_ext', 'car',
+                  'car_condition_type', 'cleared_by_customs', 'city',
                   'contact_name', 'contact_email', 'price',
                   'exchange', 'to_order', 'rule_type', 'description',)
+        extra_kwargs = {
+            'car': {'required': False}
+        }
 
     @staticmethod
     def generate_exception_for_base_buy(name: str):
@@ -47,21 +51,34 @@ class AdvertBaseSerializer(serializers.ModelSerializer):
                 'message': f"Advert with car_ext={self.validated_data.get('car_ext')} already exists"
             })
 
-    def create(self, validated_data):
-        self.check_if_exists()
-        garage = Service.objects.get(name='garage')
-        response = garage.remote_call('GET', f'/api/microservices/car/{validated_data.get("car_ext")}/')
-        if response.ok:
-            data = response.json()
-            data['car_ext'] = validated_data.get('car_ext')
-            self.validate_base_buy(data)
-            car = Car().create_car(data=data, user=self.context.get('request').user)
-            validated_data['car'] = car
-        else:
-            raise exceptions.NotFound(detail={
+    def validate_car_fields(self):
+        if not (self.validated_data.get('car_ext') or self.validated_data.get('car')):
+            raise exceptions.ValidationError(detail={
                 'success': False,
-                'message': f"Car with id={validated_data.get('car_ext')} not found."
+                'message': "[car_ext] or [car] must be given."
             })
+
+    def create(self, validated_data):
+        self.validate_car_fields()
+
+        if validated_data.get('car_ext'):
+            self.check_if_exists()
+
+            garage = Service.objects.get(name='garage')
+            response = garage.remote_call('GET', f'/api/microservices/car/{validated_data.get("car_ext")}/')
+
+            if response.ok:
+                data = response.json()
+                data['car_ext'] = validated_data.get('car_ext')
+                self.validate_base_buy(data)
+                car = Car().create_car(data=data, user=self.context.get('request').user)
+                validated_data['car'] = car
+            else:
+                raise exceptions.NotFound(detail={
+                    'success': False,
+                    'message': f"Car with id={validated_data.get('car_ext')} not found."
+                })
+
         return super().create(validated_data)
 
 

@@ -87,16 +87,16 @@ class AdvertSearchFilter(filters.FilterSet):
         return queryset.filter(price__lte=price)
 
     def filter_by_transmission_type(self, queryset, value, *args, **kwargs):
-        transmission_type = args[0]
-        return queryset.filter(car__transmission_type=transmission_type)
+        transmission_types = args[0].split(',')
+        return queryset.filter(car__transmission_type__in=transmission_types)
 
     def filter_by_car_body_type(self, queryset, value, *args, **kwargs):
-        body = args[0]
-        return queryset.filter(car__body_type=body)
+        bodies = args[0].split(',')
+        return queryset.filter(car__body_type__in=bodies)
 
     def filter_by_engine_type(self, queryset, value, *args, **kwargs):
-        engine = args[0]
-        return queryset.filter(car__engine_type=engine)
+        engine_types = args[0].split(',')
+        return queryset.filter(car__engine_type__in=engine_types)
 
     def mileage_begin_gte(self, queryset, value, *args, **kwargs):
         mileage = args[0]
@@ -107,8 +107,8 @@ class AdvertSearchFilter(filters.FilterSet):
         return queryset.filter(car__mileage__lte=mileage)
 
     def drive_type_filter(self, queryset, value, *args, **kwargs):
-        drive = args[0]
-        return queryset.filter(car__drive_type=drive)
+        drive_types = args[0].split(',')
+        return queryset.filter(car__drive_type__in=drive_types)
 
     def engine_volume_gte(self, queryset, value, *args, **kwargs):
         volume = args[0]

@@ -8,6 +8,7 @@ from nomad_auto_advert.cars.constants import OVERVIEW_SINGLE_FIELDS, ANTI_THEFT_
 
 
 def make_car_custom_options_json(options):
+
     result = {
         'Обзор': [],
         'Защита от угона': [],

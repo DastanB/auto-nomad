@@ -1,4 +1,4 @@
-from rest_framework import generics, viewsets, exceptions
+from rest_framework import generics, viewsets, exceptions, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -13,7 +13,8 @@ from nomad_auto_advert.cars.models import CarType, CarMark, CarModel, CarGenerat
 from nomad_auto_advert.cars.serializers import CarTypeSerializer, CarMarkSerializer, CarModelSerializer, \
     CarGenerationSerializer, CarSerieSerializer, CarModificationSerializer, CarCharacteristicSerializer, \
     CarCharacteristicValueSerializer, CarOptionSerializer, CarOptionValueSerializer, CarEquipmentSerializer, \
-    CarSerializer, CarDetailSerializer, CarColorSerializer, MultipleOptionSerializer, OptionSerializer
+    CarSerializer, CarDetailSerializer, CarColorSerializer, MultipleOptionSerializer, OptionSerializer, \
+    CarCreateSerializer
 from django_filters import rest_framework as filters
 
 
@@ -98,8 +99,10 @@ class CarEquipmentView(CarView):
 
 class CarViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = CarSerializer
-    queryset = Car.objects.all()
 
+    def get_queryset(self):
+        queryset = Car.objects.all().order_by('id')
+        return queryset
 
 class CarDetailView(generics.RetrieveAPIView):
     serializer_class = CarDetailSerializer
@@ -157,3 +160,8 @@ class CarCustomOptionsView(APIView):
         if options is not None:
             result = make_car_custom_options_json(options)
             return Response(result)
+        return Response({'message': 'not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+
+class CarCreateView(generics.CreateAPIView):
+    serializer_class = CarCreateSerializer

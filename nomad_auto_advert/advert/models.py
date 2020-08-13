@@ -28,7 +28,7 @@ class Advert(models.Model):
         related_name='adverts',
         on_delete=models.CASCADE,
     )
-    car_ext = models.PositiveIntegerField()
+    car_ext = models.PositiveIntegerField(blank=True, null=True)
     city = models.ForeignKey(
         to='geo.City',
         related_name='adverts',
