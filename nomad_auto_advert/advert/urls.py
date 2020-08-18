@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework import routers
 from nomad_auto_advert.advert.views import AdvertViewSet, AdvertImageViewSet, CarBodyStateViewSet, CarBodyListView, \
-    AdvertSearchView, AdvertFavouriteView, AdvertComplaintViewSet
+    AdvertSearchView, AdvertFavouriteView, AdvertComplaintViewSet, AdvertFavouriteRetrieveDestroyView
 
 app_name = 'adverts'
 
@@ -19,6 +19,7 @@ my_router.register('', AdvertViewSet, basename='adverts')
 
 urlpatterns = (
     path('car-body-types/', CarBodyListView.as_view()),
+    path('my/favourites/<int:advert_pk>/', AdvertFavouriteRetrieveDestroyView.as_view()),
     path('my/', include(my_router.urls)),
     path('', include(router.urls))
 )

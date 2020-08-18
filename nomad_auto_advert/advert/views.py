@@ -101,13 +101,10 @@ class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
 class AdvertFavouriteView(MultiSerializerViewSetMixin,
                           generics.CreateAPIView,
                           generics.ListAPIView,
-                          generics.RetrieveAPIView,
-                          generics.DestroyAPIView,
                           viewsets.GenericViewSet):
     serializer_action_classes = {
         'create': AdvertFavouriteBaseSerializer,
-        'list': AdvertFavouriteSerializer,
-        'retrieve': AdvertFavouriteSerializer
+        'list': AdvertFavouriteSerializer
     }
 
     def get_queryset(self):
@@ -115,6 +112,14 @@ class AdvertFavouriteView(MultiSerializerViewSetMixin,
 
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user)
+
+
+class AdvertFavouriteRetrieveDestroyView(generics.RetrieveAPIView,
+                                         generics.DestroyAPIView):
+    serializer_class = AdvertFavouriteSerializer
+
+    def get_object(self):
+        return AdvertFavourite.objects.filter(advert=self.kwargs.get('advert_pk'))
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
