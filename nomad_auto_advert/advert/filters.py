@@ -20,8 +20,10 @@ class CarBodyStateFilter(filters.FilterSet):
 
 class AdvertSearchFilter(filters.FilterSet):
     mark_ext = filters.NumberFilter(method='filter_by_mark')
-    model_ext = filters.NumberFilter(method='filter_by_model')
-    generation_ext = filters.NumberFilter(method='filter_by_generation')
+    model_ext = filters.CharFilter(method='filter_by_model')
+    generation_ext = filters.CharFilter(method='filter_by_generation')
+    serie_ext = filters.CharFilter(method='filter_by_serie')
+    modification_ext = filters.CharFilter(method='filter_by_modification')
     year_begin = filters.CharFilter(method='year_begin_gte')
     year_end = filters.CharFilter(method='year_end_lte')
     price_begin = filters.CharFilter(method='price_gte')
@@ -59,12 +61,20 @@ class AdvertSearchFilter(filters.FilterSet):
         return queryset.filter(car__car_mark__ext=ext)
 
     def filter_by_model(self, queryset, value, *args, **kwargs):
-        ext = args[0]
-        return queryset.filter(car__car_model__ext=ext)
+        model_ext_s = args[0].split(',')
+        return queryset.filter(car__car_model__ext__in=model_ext_s)
 
     def filter_by_generation(self, queryset, value, *args, **kwargs):
-        ext = args[0]
-        return queryset.filter(car__car_generation__ext=ext)
+        generation_ext_s = args[0].split(',')
+        return queryset.filter(car__car_generation__ext__in=generation_ext_s)
+
+    def filter_by_serie(self, queryset, value, *args, **kwargs):
+        serie_ext_s = args[0].split(',')
+        return queryset.filter(car__car_serie__ext__in=serie_ext_s)
+
+    def filter_by_modification(self, queryset, value, *args, **kwargs):
+        modification_ext_s = args[0].split(',')
+        return queryset.filter(car__car_modification__ext__in=modification_ext_s)
 
     def year_begin_gte(self, queryset, value, *args, **kwargs):
         year = args[0]
