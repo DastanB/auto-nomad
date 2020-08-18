@@ -28,6 +28,8 @@ class CarMark(models.Model):
     car_type = models.ForeignKey('CarType', related_name='car_marks', on_delete=models.CASCADE, null=True, blank=True)
     car_type_ext = models.PositiveIntegerField(null=True, blank=True)
 
+    logo = models.ImageField(null=True, blank=True)
+
     def __str__(self):
         return self.name
 
