@@ -7,10 +7,11 @@ from rest_framework.response import Response
 
 from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION, ADVERT_SORTING_DESCRIPTION
 from nomad_auto_advert.advert.filters import AdvertImageFilter, CarBodyStateFilter, AdvertSearchFilter
-from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, AdvertComplaint
+from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, \
+    AdvertComplaint, AdvertContactPhone
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
     CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer, \
-    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer
+    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer, AdvertContactPhoneSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
@@ -50,6 +51,15 @@ class AdvertImageViewSet(MultiSerializerViewSetMixin,
 
     def get_queryset(self):
         queryset = AdvertImage.objects.filter(advert__user=self.request.user)
+        return queryset
+
+
+class AdvertContactPhoneViewSet(MultiSerializerViewSetMixin,
+                                viewsets.ModelViewSet):
+    serializer_class = AdvertContactPhoneSerializer
+
+    def get_queryset(self):
+        queryset = AdvertContactPhone.objects.filter(advert__user=self.request.user)
         return queryset
 
 

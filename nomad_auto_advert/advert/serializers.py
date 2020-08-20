@@ -1,5 +1,6 @@
 from rest_framework import serializers, exceptions
-from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, AdvertComplaint
+from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, \
+    AdvertComplaint, AdvertContactPhone
 from nomad_auto_advert.cars.models import Car
 from nomad_auto_advert.cars.serializers import CarSerializer
 from nomad_auto_advert.geo.serializers import CitySerializer
@@ -19,6 +20,12 @@ class AdvertImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdvertImage
         fields = ('id', 'advert', 'image', 'image_thumbnail',)
+
+
+class AdvertContactPhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdvertContactPhone
+        fields = "__all__"
 
 
 class AdvertBaseSerializer(serializers.ModelSerializer):
@@ -102,12 +109,17 @@ class AdvertSerializer(AdvertBaseSerializer):
     car = CarSerializer(read_only=True)
     city = CitySerializer(read_only=True)
     images = serializers.SerializerMethodField()
+    contact_phones = serializers.SerializerMethodField()
+
+    def get_contact_phones(self, obj: Advert):
+        return AdvertContactPhoneSerializer(obj.advert_phones.all(), many=True).data
 
     def get_images(self, obj: Advert):
         return AdvertImageSerializer(obj.advert_images.all(), many=True).data
 
     class Meta(AdvertBaseSerializer.Meta):
-        fields = AdvertBaseSerializer.Meta.fields + ('images', 'created_at', 'updated_at')
+        fields = AdvertBaseSerializer.Meta.fields + \
+                 ('images', 'contact_phones', 'created_at', 'updated_at')
 
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):
