@@ -159,6 +159,16 @@ class AdvertFavouriteBaseSerializer(serializers.ModelSerializer):
         model = AdvertFavourite
         fields = ("id", "advert")
 
+    def create(self, validated_data):
+        favourite = AdvertFavourite.objects.filter(
+            advert=self.validated_data.get('advert'),
+            profile=self.context.get('request').user
+        ).first()
+
+        if favourite is not None:
+            return favourite
+        return super().create(validated_data)
+
 
 class AdvertFavouriteSerializer(AdvertFavouriteBaseSerializer):
     advert = AdvertSerializer(read_only=True)
