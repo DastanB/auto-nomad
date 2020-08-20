@@ -53,7 +53,7 @@ class AdvertSearchFilter(filters.FilterSet):
     cleared_by_customs = filters.BooleanFilter(method="filter_cleared_by_customs")      # Растоможен
     exchange = filters.BooleanFilter(method="filter_exchange")                          # Обмен
     condition_type = filters.NumberFilter(method="filter_condition_type")               # Состояние авто
-
+    city = filters.CharFilter(method='filter_by_cities')
     sort_by = filters.NumberFilter(method='sort_by_number')
 
     def filter_by_mark(self, queryset, value, *args, **kwargs):
@@ -216,3 +216,7 @@ class AdvertSearchFilter(filters.FilterSet):
             return queryset.order_by('price', '-car__year')
         if number == 7:
             return queryset.order_by('car__mileage')
+
+    def filter_by_cities(self, queryset, value, *args, **kwargs):
+        cities = args[0].split(',')
+        return queryset.filter(city__in=cities)
