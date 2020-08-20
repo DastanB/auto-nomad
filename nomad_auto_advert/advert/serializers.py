@@ -7,6 +7,20 @@ from nomad_auto_advert.microservices.models import Service
 from nomad_auto_advert.utils.serializers import ChoiceValueDisplayField
 
 
+class AdvertImageSerializer(serializers.ModelSerializer):
+    image_thumbnail = serializers.SerializerMethodField(read_only=True)
+
+    def get_image_thumbnail(self, obj: AdvertImage):
+        try:
+            return obj.image_thumbnail.url
+        except:
+            return
+
+    class Meta:
+        model = AdvertImage
+        fields = ('id', 'advert', 'image', 'image_thumbnail',)
+
+
 class AdvertBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advert
@@ -87,9 +101,13 @@ class AdvertSerializer(AdvertBaseSerializer):
     rule_type = ChoiceValueDisplayField()
     car = CarSerializer(read_only=True)
     city = CitySerializer(read_only=True)
+    images = serializers.SerializerMethodField()
+
+    def get_images(self, obj: Advert):
+        return AdvertImageSerializer(obj.advert_images.all(), many=True).data
 
     class Meta(AdvertBaseSerializer.Meta):
-        fields = AdvertBaseSerializer.Meta.fields + ('created_at', 'updated_at')
+        fields = AdvertBaseSerializer.Meta.fields + ('images', 'created_at', 'updated_at')
 
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):
@@ -98,20 +116,6 @@ class AdvertUpdateSerializer(serializers.ModelSerializer):
         fields = ('id', 'car_condition_type', 'cleared_by_customs',
                   'city', 'contact_name', 'contact_email', 'price',
                   'exchange', 'to_order', 'rule_type', 'description',)
-
-
-class AdvertImageSerializer(serializers.ModelSerializer):
-    image_thumbnail = serializers.SerializerMethodField(read_only=True)
-
-    def get_image_thumbnail(self, obj: AdvertImage):
-        try:
-            return obj.image_thumbnail.url
-        except:
-            return
-
-    class Meta:
-        model = AdvertImage
-        fields = ('id', 'advert', 'image', 'image_thumbnail',)
 
 
 class CarBodySerializer(serializers.ModelSerializer):

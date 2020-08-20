@@ -120,7 +120,6 @@ class CarUpdateSerializer(CarBaseSerializer):
     def update(self, instance, validated_data):
         if validated_data.get('car_color'):
             validated_data['car_color'] = CarColor.objects.get(ext=validated_data.get('car_color'))
-        print(validated_data)
         return super(CarUpdateSerializer, self).update(instance, validated_data)
 
 

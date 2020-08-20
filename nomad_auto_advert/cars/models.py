@@ -198,6 +198,8 @@ class Car(models.Model):
 
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
+    vin = models.CharField(max_length=22, blank=True, null=True)
+    state_number = models.CharField(max_length=16, blank=True, null=True)
 
     def set_body_type(self):
         values = CarCharacteristicValue.objects.filter(car_characteristic__ext=2,
@@ -334,8 +336,14 @@ class Car(models.Model):
             self.mileage = data.get('mileage')
             self.year = data.get("age")
 
+            if data.get('vin'):
+                self.vin = data.get('vin')
+            if data.get('state_number'):
+                self.state_number = data.get('state_number')
+
             self.set_all_characteristics()
             self.save()
+
             return self
         print('Car info not found')
 
