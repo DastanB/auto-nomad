@@ -110,6 +110,10 @@ class AdvertSerializer(AdvertBaseSerializer):
     city = CitySerializer(read_only=True)
     images = serializers.SerializerMethodField()
     contact_phones = serializers.SerializerMethodField()
+    in_fav = serializers.SerializerMethodField()
+
+    def get_in_fav(self, obj: Advert):
+        return getattr(obj, "in_fav")
 
     def get_contact_phones(self, obj: Advert):
         return AdvertContactPhoneSerializer(obj.advert_phones.all(), many=True).data
@@ -119,7 +123,7 @@ class AdvertSerializer(AdvertBaseSerializer):
 
     class Meta(AdvertBaseSerializer.Meta):
         fields = AdvertBaseSerializer.Meta.fields + \
-                 ('images', 'contact_phones', 'created_at', 'updated_at')
+                 ('images', 'contact_phones', 'in_fav', 'created_at', 'updated_at')
 
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):

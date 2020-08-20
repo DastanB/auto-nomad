@@ -1,3 +1,4 @@
+from django.db.models import Exists, OuterRef
 from drf_yasg.utils import swagger_auto_schema
 from django_filters import rest_framework as filters
 
@@ -35,11 +36,13 @@ class AdvertViewSet(MultiSerializerViewSetMixin,
         return super().create(request, *args, **kwargs)
 
     def get_queryset(self):
+        users_favourites = AdvertFavourite.objects.filter(profile=self.request.user)
+
         return self.queryset.filter(user=self.request.user).select_related(
-            'car',
-            'car__body_type', 'car__drive_type', 'car__transmission_type', 'car__engine_type',
+            'car', 'car__body_type', 'car__drive_type', 'car__transmission_type', 'car__engine_type',
             'car__car_mark', 'car__car_model', 'car__car_generation', 'car__car_serie', 'car__car_modification'
-        )
+        ).prefetch_related('favourites')\
+            .annotate(in_fav=Exists(users_favourites.filter(advert=OuterRef('id'))))
 
 
 class AdvertImageViewSet(MultiSerializerViewSetMixin,
@@ -92,11 +95,14 @@ class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
     filterset_class = AdvertSearchFilter
 
     def get_queryset(self):
+        users_favourites = AdvertFavourite.objects.filter(profile=self.request.user)
+
         return Advert.objects.all().select_related(
             'car',
             'car__body_type', 'car__drive_type', 'car__transmission_type', 'car__engine_type',
             'car__car_mark', 'car__car_model', 'car__car_generation', 'car__car_serie', 'car__car_modification'
-        )
+        ).prefetch_related('favourites')\
+            .annotate(in_fav=Exists(users_favourites.filter(advert=OuterRef('id'))))
 
     def get_object(self):
         obj = super(AdvertSearchView, self).get_object()
