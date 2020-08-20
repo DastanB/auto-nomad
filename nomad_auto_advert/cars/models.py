@@ -1,4 +1,5 @@
 from django.db import models
+from colorful.fields import RGBColorField
 
 from nomad_auto_advert.cars.constants import HEADLIGHTS_TYPES, SIGNALING_TYPES, SEAT_COUNT_TYPES, \
     INTERIOR_MATERIAL_TYPES, INTERIOR_COLOR_TYPES, SEAT_TYPES, SPARE_WHEEL_TYPES, DISC_TYPES, DISC_SIZE_TYPES, \
@@ -156,6 +157,9 @@ class CarCharacteristicValue(models.Model):
 class CarColor(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ext = models.PositiveSmallIntegerField(unique=True, null=True)
+    r_abbreviation = models.PositiveSmallIntegerField(null=True)
+    g_abbreviation = models.PositiveSmallIntegerField(null=True)
+    b_abbreviation = models.PositiveSmallIntegerField(null=True)
 
     def __str__(self):
         return self.name

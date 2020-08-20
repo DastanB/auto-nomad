@@ -69,6 +69,7 @@ THIRD_PARTY_APPS = [
     "django_filters",
     "rest_framework_swagger",
     "drf_yasg",
+    "colorful"
 ]
 LOCAL_APPS = [
     "nomad_auto_advert.users.apps.UsersAppConfig",
