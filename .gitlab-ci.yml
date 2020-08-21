@@ -13,6 +13,7 @@ stages:
 variables:
   IMAGE_DJANGO: ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/django
   IMAGE_POSTGRES: ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/postgres
+  IMAGE_DOCS: ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/docs:${CI_COMMIT_SHA}
 
 #prod-build:
 #  stage: build
@@ -31,10 +32,12 @@ variables:
 test-build:
   stage: build
   script:
-    - docker build -f compose/test/django/Dockerfile -t ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/test_django:${CI_COMMIT_SHA} --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROXY .
+    - docker build -f compose/test/django/Dockerfile -t ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/test_django:${CI_COMMIT_SHA} .
     - docker push ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/test_django:$CI_COMMIT_SHA
-    - docker build -f compose/test/postgres/Dockerfile -t ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/test_postgres:${CI_COMMIT_SHA} --build-arg HTTP_PROXY=$HTTP_PROXY --build-arg HTTPS_PROXY=$HTTPS_PROXY .
+    - docker build -f compose/test/postgres/Dockerfile -t ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/test_postgres:${CI_COMMIT_SHA} .
     - docker push ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/test_postgres:$CI_COMMIT_SHA
+    - docker build -f compose/local/nginx/Dockerfile -t ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/docs:${CI_COMMIT_SHA} .
+    - docker push ${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/docs:${CI_COMMIT_SHA}
   only:
     - test
 
