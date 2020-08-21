@@ -58,6 +58,15 @@ services:
     ports:
       - "7000:7000"
 
+  nginx:
+    build:
+      context: .
+      dockerfile: ./compose/local/nginx/Dockerfile
+    env_file:
+      - ./.envs/.local/.django
+    ports:
+      - "7001:80"
+
 #  mailhog:
 #    image: mailhog/mailhog:v1.0.0
 #    ports:

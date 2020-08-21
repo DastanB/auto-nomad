@@ -9,7 +9,7 @@ SOURCEDIR     = ./_source
 BUILDDIR      = ./_build
 APP = /app
 
-.PHONY: help livehtml apidocs Makefile
+.PHONY: help livehtml apidocs build Makefile
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -22,6 +22,10 @@ livehtml:
 # Outputs rst files from django application code
 apidocs:
 	sphinx-apidoc -o $(SOURCEDIR)/api /app
+
+# Builds html files
+build:
+	sphinx-build -b html -c . $(SOURCEDIR) $(BUILDDIR)/dist
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
