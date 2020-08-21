@@ -1,4 +1,5 @@
 from django.db import models
+from colorful.fields import RGBColorField
 
 from nomad_auto_advert.cars.constants import HEADLIGHTS_TYPES, SIGNALING_TYPES, SEAT_COUNT_TYPES, \
     INTERIOR_MATERIAL_TYPES, INTERIOR_COLOR_TYPES, SEAT_TYPES, SPARE_WHEEL_TYPES, DISC_TYPES, DISC_SIZE_TYPES, \
@@ -156,6 +157,9 @@ class CarCharacteristicValue(models.Model):
 class CarColor(models.Model):
     name = models.CharField(max_length=100, unique=True)
     ext = models.PositiveSmallIntegerField(unique=True, null=True)
+    r_abbreviation = models.PositiveSmallIntegerField(null=True)
+    g_abbreviation = models.PositiveSmallIntegerField(null=True)
+    b_abbreviation = models.PositiveSmallIntegerField(null=True)
 
     def __str__(self):
         return self.name
@@ -198,6 +202,8 @@ class Car(models.Model):
 
     mileage = models.PositiveIntegerField(null=True)
     year = models.PositiveIntegerField(null=True)
+    vin = models.CharField(max_length=22, blank=True, null=True)
+    state_number = models.CharField(max_length=16, blank=True, null=True)
 
     def set_body_type(self):
         values = CarCharacteristicValue.objects.filter(car_characteristic__ext=2,
@@ -334,8 +340,14 @@ class Car(models.Model):
             self.mileage = data.get('mileage')
             self.year = data.get("age")
 
+            if data.get('vin'):
+                self.vin = data.get('vin')
+            if data.get('state_number'):
+                self.state_number = data.get('state_number')
+
             self.set_all_characteristics()
             self.save()
+
             return self
         print('Car info not found')
 

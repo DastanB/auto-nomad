@@ -1,10 +1,31 @@
 from rest_framework import serializers, exceptions
-from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, AdvertComplaint
+from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, \
+    AdvertComplaint, AdvertContactPhone
 from nomad_auto_advert.cars.models import Car
 from nomad_auto_advert.cars.serializers import CarSerializer
 from nomad_auto_advert.geo.serializers import CitySerializer
 from nomad_auto_advert.microservices.models import Service
 from nomad_auto_advert.utils.serializers import ChoiceValueDisplayField
+
+
+class AdvertImageSerializer(serializers.ModelSerializer):
+    image_thumbnail = serializers.SerializerMethodField(read_only=True)
+
+    def get_image_thumbnail(self, obj: AdvertImage):
+        try:
+            return obj.image_thumbnail.url
+        except:
+            return
+
+    class Meta:
+        model = AdvertImage
+        fields = ('id', 'advert', 'image', 'image_thumbnail',)
+
+
+class AdvertContactPhoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdvertContactPhone
+        fields = "__all__"
 
 
 class AdvertBaseSerializer(serializers.ModelSerializer):
@@ -87,9 +108,22 @@ class AdvertSerializer(AdvertBaseSerializer):
     rule_type = ChoiceValueDisplayField()
     car = CarSerializer(read_only=True)
     city = CitySerializer(read_only=True)
+    images = serializers.SerializerMethodField()
+    contact_phones = serializers.SerializerMethodField()
+    in_fav = serializers.SerializerMethodField()
+
+    def get_in_fav(self, obj: Advert):
+        return getattr(obj, "in_fav")
+
+    def get_contact_phones(self, obj: Advert):
+        return AdvertContactPhoneSerializer(obj.advert_phones.all(), many=True).data
+
+    def get_images(self, obj: Advert):
+        return AdvertImageSerializer(obj.advert_images.all(), many=True).data
 
     class Meta(AdvertBaseSerializer.Meta):
-        fields = AdvertBaseSerializer.Meta.fields + ('created_at', 'updated_at')
+        fields = AdvertBaseSerializer.Meta.fields + \
+                 ('images', 'contact_phones', 'in_fav', 'created_at', 'updated_at')
 
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):
@@ -98,20 +132,6 @@ class AdvertUpdateSerializer(serializers.ModelSerializer):
         fields = ('id', 'car_condition_type', 'cleared_by_customs',
                   'city', 'contact_name', 'contact_email', 'price',
                   'exchange', 'to_order', 'rule_type', 'description',)
-
-
-class AdvertImageSerializer(serializers.ModelSerializer):
-    image_thumbnail = serializers.SerializerMethodField(read_only=True)
-
-    def get_image_thumbnail(self, obj: AdvertImage):
-        try:
-            return obj.image_thumbnail.url
-        except:
-            return
-
-    class Meta:
-        model = AdvertImage
-        fields = ('id', 'advert', 'image', 'image_thumbnail',)
 
 
 class CarBodySerializer(serializers.ModelSerializer):
@@ -138,6 +158,16 @@ class AdvertFavouriteBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdvertFavourite
         fields = ("id", "advert")
+
+    def create(self, validated_data):
+        favourite = AdvertFavourite.objects.filter(
+            advert=self.validated_data.get('advert'),
+            profile=self.context.get('request').user
+        ).first()
+
+        if favourite is not None:
+            return favourite
+        return super().create(validated_data)
 
 
 class AdvertFavouriteSerializer(AdvertFavouriteBaseSerializer):

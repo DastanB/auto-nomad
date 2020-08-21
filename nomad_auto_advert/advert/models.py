@@ -17,6 +17,12 @@ from nomad_auto_advert.cars.models import (
 from nomad_auto_advert.microservices.models import Service
 
 
+class AdvertManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset()\
+            .prefetch_related('advert_images', 'advert_phones')
+
+
 class Advert(models.Model):
     user = models.ForeignKey(
         to='users.Profile',
