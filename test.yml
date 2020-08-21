@@ -51,6 +51,23 @@ services:
 #        - "traefik.backend.healthcheck.scheme=http"
 #        - "traefik.backend.healthcheck.hostname=advert.test.auto-nomad.kz"
 
+  docs:
+    build:
+      context: .
+      dockerfile: ./compose/local/nginx/Dockerfile
+    image: "${CI_REGISTRY}/${CI_REGISTRY_USER}/nomad_auto_advert/docs:${CI_COMMIT_SHA}"
+    env_file:
+      - ./.envs/.test/.django
+    networks:
+      - masternet
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.port=80"
+        - "traefik.docker.network=masternet"
+        - "traefik.frontend.rule=Host:docs.advert.test.auto-nomad.kz"
+
+
   postgres:
     build:
       context: .
