@@ -30,7 +30,7 @@ COPY ./nomad_auto_advert /app/nomad_auto_advert
 
 WORKDIR /docs
 
-CMD make build
+RUN make build
 
 WORKDIR /docs/_build/dist
 
