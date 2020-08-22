@@ -25,13 +25,10 @@ COPY ./requirements /requirements
 RUN pip install -r /requirements/local.txt
 
 COPY ./docs /docs
-COPY ./config /config
+COPY ./config /app/config
 COPY ./nomad_auto_advert /app/nomad_auto_advert
 
 WORKDIR /docs
 
-RUN make build
+CMD make run
 
-WORKDIR /docs/_build/dist
-
-CMD python3 -m http.server 80

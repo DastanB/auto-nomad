@@ -27,6 +27,10 @@ apidocs:
 build:
 	sphinx-build -b html -c . $(SOURCEDIR) $(BUILDDIR)/dist
 
+# Build and run
+run:
+	sphinx-build -b html -c . $(SOURCEDIR) $(BUILDDIR)/dist && cd $(BUILDDIR)/dist && python3 -m http.server 80
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
