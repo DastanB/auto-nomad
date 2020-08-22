@@ -55,3 +55,15 @@ class Profile(models.Model):
     class Meta:
         verbose_name = "Пользователь"
         unique_together = ('user_ext', 'phone')
+
+
+class ContactPhone(models.Model):
+    profile = models.ForeignKey(
+        to='users.Profile',
+        related_name='contact_phones',
+        on_delete=models.CASCADE
+    )
+    phone = models.CharField(max_length=20)
+
+    def __str__(self):
+        return f"{self.id} {self.phone}"

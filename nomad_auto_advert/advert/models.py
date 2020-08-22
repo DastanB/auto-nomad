@@ -68,6 +68,10 @@ class Advert(models.Model):
         max_length=100,
         null=True, blank=True
     )
+    contact_phones = models.ManyToManyField(
+        to='users.ContactPhone',
+        related_name='contact_phones'
+    )
     description = models.TextField(
         'Описание',
         null=True, blank=True
@@ -102,15 +106,6 @@ class Advert(models.Model):
 
     def __str__(self):
         return f"ID: {self.id}, CONTACT: {self.contact_name}, CAR_ID: {self.car_ext}"
-
-
-class AdvertContactPhone(models.Model):
-    advert = models.ForeignKey(
-        to='advert.Advert',
-        related_name='advert_phones',
-        on_delete=models.CASCADE
-    )
-    phone = models.CharField(max_length=20)
 
 
 class AdvertImage(models.Model):
