@@ -32,10 +32,6 @@ WORKDIR /docs
 
 CMD make build
 
+WORKDIR /docs/_build/dist
 
-FROM nginx:1.19
-
-COPY --from=build-stage /docs/_build/dist/ /usr/share/nginx/html
-
-COPY compose/local/nginx/site.nginx.conf /etc/nginx/conf.d/default.conf
-COPY compose/local/nginx/nginx.conf /etc/nginx/nginx.conf
+CMD python3 -m http.server 80
