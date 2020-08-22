@@ -6,7 +6,8 @@ from nomad_auto_advert.users import views
 app_name = "users"
 
 router = routers.DefaultRouter()
-router.register(r'profile', views.GarageProfileViewSet, 'profile')
+router.register('profile', views.GarageProfileViewSet, 'profile')
+router.register('phones', views.ContactPhoneViewSet, basename='phones')
 
 urlpatterns = [
     path('all/', views.UserListDebug.as_view())

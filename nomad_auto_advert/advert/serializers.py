@@ -1,10 +1,11 @@
 from rest_framework import serializers, exceptions
 from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, \
-    AdvertComplaint, AdvertContactPhone
+    AdvertComplaint
 from nomad_auto_advert.cars.models import Car
 from nomad_auto_advert.cars.serializers import CarSerializer
 from nomad_auto_advert.geo.serializers import CitySerializer
 from nomad_auto_advert.microservices.models import Service
+from nomad_auto_advert.users.serializers import ContactPhoneSerializer
 from nomad_auto_advert.utils.serializers import ChoiceValueDisplayField
 
 
@@ -22,12 +23,6 @@ class AdvertImageSerializer(serializers.ModelSerializer):
         fields = ('id', 'advert', 'image', 'image_thumbnail',)
 
 
-class AdvertContactPhoneSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AdvertContactPhone
-        fields = "__all__"
-
-
 class AdvertBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advert
@@ -35,7 +30,7 @@ class AdvertBaseSerializer(serializers.ModelSerializer):
         fields = read_only_fields + \
                  ('car_ext', 'car',
                   'car_condition_type', 'cleared_by_customs', 'city',
-                  'contact_name', 'contact_email', 'price',
+                  'contact_name', 'contact_email', 'contact_phones', 'price',
                   'exchange', 'to_order', 'rule_type', 'description',)
         extra_kwargs = {
             'car': {'required': False}
@@ -109,29 +104,26 @@ class AdvertSerializer(AdvertBaseSerializer):
     car = CarSerializer(read_only=True)
     city = CitySerializer(read_only=True)
     images = serializers.SerializerMethodField()
-    contact_phones = serializers.SerializerMethodField()
     in_fav = serializers.SerializerMethodField()
+    contact_phones = ContactPhoneSerializer(many=True)
 
     def get_in_fav(self, obj: Advert):
         return getattr(obj, "in_fav")
-
-    def get_contact_phones(self, obj: Advert):
-        return AdvertContactPhoneSerializer(obj.advert_phones.all(), many=True).data
 
     def get_images(self, obj: Advert):
         return AdvertImageSerializer(obj.advert_images.all(), many=True).data
 
     class Meta(AdvertBaseSerializer.Meta):
         fields = AdvertBaseSerializer.Meta.fields + \
-                 ('images', 'contact_phones', 'in_fav', 'created_at', 'updated_at')
+                 ('images', 'in_fav', 'created_at', 'updated_at')
 
 
 class AdvertUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Advert
         fields = ('id', 'car_condition_type', 'cleared_by_customs',
-                  'city', 'contact_name', 'contact_email', 'price',
-                  'exchange', 'to_order', 'rule_type', 'description',)
+                  'city', 'contact_name', 'contact_email', 'contact_phones',
+                  'price', 'exchange', 'to_order', 'rule_type', 'description',)
 
 
 class CarBodySerializer(serializers.ModelSerializer):
