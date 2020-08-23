@@ -9,10 +9,11 @@ from rest_framework.response import Response
 from nomad_auto_advert.advert.const import ADVERT_CREATE_DESCRIPTION, ADVERT_SORTING_DESCRIPTION
 from nomad_auto_advert.advert.filters import AdvertImageFilter, CarBodyStateFilter, AdvertSearchFilter
 from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, \
-    AdvertComplaint
+    AdvertComplaint, AdvertComment
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
     CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer, \
-    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer
+    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer, MyAdvertCommentSerializer, \
+    AdvertCommentSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
@@ -146,3 +147,25 @@ class AdvertComplaintViewSet(MultiSerializerViewSetMixin,
 
     def perform_create(self, serializer):
         serializer.save(profile=self.request.user)
+
+
+class MyAdvertCommentViewSet(MultiSerializerViewSetMixin,
+                           generics.CreateAPIView,
+                           generics.RetrieveAPIView,
+                           generics.ListAPIView,
+                           viewsets.GenericViewSet):
+    serializer_class = MyAdvertCommentSerializer
+
+    def get_queryset(self):
+        return AdvertComment.objects.filter(profile=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(profile=self.request.user)
+
+
+class AdvertCommentView(generics.ListAPIView):
+    serializer_class = AdvertCommentSerializer
+
+    def get_queryset(self):
+        return AdvertComment.objects.prefetch_related('profile')\
+            .filter(advert=self.kwargs.get('advert_pk'), parent__isnull=True)

@@ -182,3 +182,26 @@ class AdvertComplaint(TimeStampedModel):
     class Meta:
         verbose_name = 'Жалоба'
         verbose_name_plural = 'Жалобы'
+
+
+class AdvertComment(TimeStampedModel):
+    advert = models.ForeignKey(
+        to='advert.Advert',
+        related_name='comments',
+        on_delete=models.CASCADE
+    )
+    profile = models.ForeignKey(
+        to='users.Profile',
+        related_name='comments',
+        on_delete=models.CASCADE
+    )
+    parent = models.ForeignKey(
+        to='self',
+        related_name='comments',
+        on_delete=models.SET_NULL,
+        null=True
+    )
+    text = models.TextField()
+
+    def __str__(self):
+        return f'id={self.id}, text={self.text}'

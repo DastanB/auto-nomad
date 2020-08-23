@@ -1,6 +1,6 @@
 from rest_framework import serializers, exceptions
 from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, CarBody, AdvertFavourite, \
-    AdvertComplaint
+    AdvertComplaint, AdvertComment
 from nomad_auto_advert.cars.models import Car
 from nomad_auto_advert.cars.serializers import CarSerializer
 from nomad_auto_advert.geo.serializers import CitySerializer
@@ -24,6 +24,8 @@ class AdvertImageSerializer(serializers.ModelSerializer):
 
 
 class AdvertBaseSerializer(serializers.ModelSerializer):
+    contact_phones = ContactPhoneSerializer(required=False, many=True)
+
     class Meta:
         model = Advert
         read_only_fields = ('id', 'user', 'views_count', )
@@ -172,3 +174,30 @@ class AdvertComplaintSerializer(serializers.ModelSerializer):
         fields = ('id', 'advert', 'description',
                   'is_spam', 'is_inappropriate_content', 'is_fake_information',
                   'created', 'modified')
+
+
+class MyAdvertCommentSerializer(serializers.ModelSerializer):
+    profile = serializers.SerializerMethodField()
+
+    def get_profile(self, obj: AdvertComment):
+        return obj.profile.first_name + ' ' + obj.profile.last_name
+
+    class Meta:
+        model = AdvertComment
+        read_only_fields = ('profile', )
+        fields = ('id', 'advert', 'parent', 'text') + read_only_fields
+
+
+class AdvertCommentSerializer(serializers.ModelSerializer):
+    children = serializers.SerializerMethodField()
+    profile = serializers.SerializerMethodField()
+
+    def get_profile(self, obj: AdvertComment):
+        return obj.profile.first_name + ' ' + obj.profile.last_name
+
+    def get_children(self, obj: AdvertComment):
+        return MyAdvertCommentSerializer(AdvertComment.objects.filter(parent=obj), many=True).data
+
+    class Meta:
+        model = AdvertComment
+        fields = ('__all__')

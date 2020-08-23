@@ -604,22 +604,22 @@ class Option(models.Model):
     def get_overview_fields(cls):
         electric_heating = MultipleOption.objects.filter(separator_id=1)
         electric_heating_objects = {x.id: x.name for x in electric_heating}
-        OVERVIEW_MULTIPLE_FIELDS['electric_heating']['fields'] = electric_heating_objects
+        OVERVIEW_MULTIPLE_FIELDS[0][1] = electric_heating_objects
 
-        result = {
-            'single_fields': OVERVIEW_SINGLE_FIELDS,
-            'choice_fields': OVERVIEW_CHOICE_FIELDS,
-            'multiple_fields': OVERVIEW_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', OVERVIEW_SINGLE_FIELDS),
+            ('choice_fields', OVERVIEW_CHOICE_FIELDS),
+            ('multiple_fields', OVERVIEW_MULTIPLE_FIELDS),
+        )
         return result
 
     @classmethod
     def get_anti_theft_fields(cls):
-        result = {
-            'single_fields': ANTI_THEFT_SINGLE_FIELDS,
-            'choice_fields': ANTI_THEFT_CHOICE_FIELDS,
-            'multiple_fields': ANTI_THEFT_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', ANTI_THEFT_SINGLE_FIELDS),
+            ('choice_fields', ANTI_THEFT_CHOICE_FIELDS),
+            ('multiple_fields', ANTI_THEFT_MULTIPLE_FIELDS)
+        )
         return result
 
     @classmethod
@@ -630,46 +630,46 @@ class Option(models.Model):
         heated_seat_objects = {x.id: x.name for x in heated_seat}
         seat_ventilation = MultipleOption.objects.filter(separator_id=4)
         seat_ventilation_objects = {x.id: x.name for x in seat_ventilation}
-        SALON_MULTIPLE_FIELDS['seat_electric_adjustment']['fields'] = seat_electric_adjustment_objects
-        SALON_MULTIPLE_FIELDS['heated_seat']['fields'] = heated_seat_objects
-        SALON_MULTIPLE_FIELDS['seat_ventilation']['fields'] = seat_ventilation_objects
+        SALON_MULTIPLE_FIELDS[0][1] = seat_electric_adjustment_objects
+        SALON_MULTIPLE_FIELDS[1][1] = heated_seat_objects
+        SALON_MULTIPLE_FIELDS[2][1] = seat_ventilation_objects
 
-        result = {
-            'single_fields': SALON_SINGLE_FIELDS,
-            'choice_fields': SALON_CHOICE_FIELDS,
-            'multiple_fields': SALON_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', SALON_SINGLE_FIELDS),
+            ('choice_fields', SALON_CHOICE_FIELDS),
+            ('multiple_fields', SALON_MULTIPLE_FIELDS)
+        )
         return result
 
     @classmethod
     def get_other_fields(cls):
         suspension = MultipleOption.objects.filter(separator_id=5)
         suspension_objects = {x.id: x.name for x in suspension}
-        OTHER_MULTIPLE_FIELDS['suspension']['fields'] = suspension_objects
+        OTHER_MULTIPLE_FIELDS[0][1] = suspension_objects
 
-        result = {
-            'single_fields': OTHER_SINGLE_FIELDS,
-            'choice_fields': OTHER_CHOICE_FIELDS,
-            'multiple_fields': OTHER_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', OTHER_SINGLE_FIELDS),
+            ('choice_fields', OTHER_CHOICE_FIELDS),
+            ('multiple_fields', OTHER_MULTIPLE_FIELDS)
+        )
         return result
 
     @classmethod
     def get_exterior_elements(cls):
-        result = {
-            'single_fields': EXTERIOR_ELEMENTS_SINGLE_FIELDS,
-            'choice_fields': EXTERIOR_ELEMENTS_CHOICE_FIELDS,
-            'multiple_fields': EXTERIOR_ELEMENTS_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', EXTERIOR_ELEMENTS_SINGLE_FIELDS),
+            ('choice_fields', EXTERIOR_ELEMENTS_CHOICE_FIELDS),
+            ('multiple_fields', EXTERIOR_ELEMENTS_MULTIPLE_FIELDS)
+        )
         return result
 
     @classmethod
     def get_multimedia_fields(cls):
-        result = {
-            'single_fields': MULTIMEDIA_SINGLE_FIELDS,
-            'choice_fields': MULTIMEDIA_CHOICE_FIELDS,
-            'multiple_fields': MULTIMEDIA_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', MULTIMEDIA_SINGLE_FIELDS),
+            ('choice_fields', MULTIMEDIA_CHOICE_FIELDS),
+            ('multiple_fields', MULTIMEDIA_MULTIPLE_FIELDS)
+        )
         return result
 
     @classmethod
@@ -680,15 +680,15 @@ class Option(models.Model):
         steering_wheel_adjustment_objects = {x.id: x.name for x in steering_wheel_adjustment}
         parking_assistance_system = MultipleOption.objects.filter(separator_id=8)
         parking_assistance_system_objects = {x.id: x.name for x in parking_assistance_system}
-        COMFORT_MULTIPLE_FIELDS['power_window']['fields'] = power_window_objects
-        COMFORT_MULTIPLE_FIELDS['steering_wheel_adjustment']['fields'] = steering_wheel_adjustment_objects
-        COMFORT_MULTIPLE_FIELDS['parking_assistance_system']['fields'] = parking_assistance_system_objects
+        COMFORT_MULTIPLE_FIELDS[0][1] = power_window_objects
+        COMFORT_MULTIPLE_FIELDS[1][1] = steering_wheel_adjustment_objects
+        COMFORT_MULTIPLE_FIELDS[2][1] = parking_assistance_system_objects
 
-        result = {
-            'single_fields': COMFORT_SINGLE_FIELDS,
-            'choice_fields': COMFORT_CHOICE_FIELDS,
-            'multiple_fields': COMFORT_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', COMFORT_SINGLE_FIELDS),
+            ('choice_fields', COMFORT_CHOICE_FIELDS),
+            ('multiple_fields', COMFORT_MULTIPLE_FIELDS)
+        )
         return result
 
     @classmethod
@@ -699,13 +699,13 @@ class Option(models.Model):
         isofix_fastening_system_objects = {x.id: x.name for x in isofix_fastening_system}
         support_system = MultipleOption.objects.filter(separator_id=11)
         support_system_objects = {x.id: x.name for x in support_system}
-        SAFETY_MULTIPLE_FIELDS['airbag']['fields'] = airbag_objects
-        SAFETY_MULTIPLE_FIELDS['isofix_fastening_system']['fields'] = isofix_fastening_system_objects
-        SAFETY_MULTIPLE_FIELDS['support_system']['fields'] = support_system_objects
+        SAFETY_MULTIPLE_FIELDS[0][1] = airbag_objects
+        SAFETY_MULTIPLE_FIELDS[1][1] = isofix_fastening_system_objects
+        SAFETY_MULTIPLE_FIELDS[2][1] = support_system_objects
 
-        result = {
-            'single_fields': SAFETY_SINGLE_FIELDS,
-            'choice_fields': SAFETY_CHOICE_FIELDS,
-            'multiple_fields': SAFETY_MULTIPLE_FIELDS
-        }
+        result = (
+            ('single_fields', SAFETY_SINGLE_FIELDS),
+            ('choice_fields', SAFETY_CHOICE_FIELDS),
+            ('multiple_fields', SAFETY_MULTIPLE_FIELDS)
+        )
         return result
