@@ -604,7 +604,7 @@ class Option(models.Model):
     def get_overview_fields(cls):
         electric_heating = MultipleOption.objects.filter(separator_id=1)
         electric_heating_objects = {x.id: x.name for x in electric_heating}
-        OVERVIEW_MULTIPLE_FIELDS[0][1] = electric_heating_objects
+        OVERVIEW_MULTIPLE_FIELDS[0][1]['fields'] = electric_heating_objects
 
         result = (
             ('single_fields', OVERVIEW_SINGLE_FIELDS),
@@ -630,9 +630,9 @@ class Option(models.Model):
         heated_seat_objects = {x.id: x.name for x in heated_seat}
         seat_ventilation = MultipleOption.objects.filter(separator_id=4)
         seat_ventilation_objects = {x.id: x.name for x in seat_ventilation}
-        SALON_MULTIPLE_FIELDS[0][1] = seat_electric_adjustment_objects
-        SALON_MULTIPLE_FIELDS[1][1] = heated_seat_objects
-        SALON_MULTIPLE_FIELDS[2][1] = seat_ventilation_objects
+        SALON_MULTIPLE_FIELDS[0][1]['fields'] = seat_electric_adjustment_objects
+        SALON_MULTIPLE_FIELDS[1][1]['fields'] = heated_seat_objects
+        SALON_MULTIPLE_FIELDS[2][1]['fields'] = seat_ventilation_objects
 
         result = (
             ('single_fields', SALON_SINGLE_FIELDS),
@@ -645,7 +645,7 @@ class Option(models.Model):
     def get_other_fields(cls):
         suspension = MultipleOption.objects.filter(separator_id=5)
         suspension_objects = {x.id: x.name for x in suspension}
-        OTHER_MULTIPLE_FIELDS[0][1] = suspension_objects
+        OTHER_MULTIPLE_FIELDS[0][1]['fields'] = suspension_objects
 
         result = (
             ('single_fields', OTHER_SINGLE_FIELDS),
@@ -680,9 +680,9 @@ class Option(models.Model):
         steering_wheel_adjustment_objects = {x.id: x.name for x in steering_wheel_adjustment}
         parking_assistance_system = MultipleOption.objects.filter(separator_id=8)
         parking_assistance_system_objects = {x.id: x.name for x in parking_assistance_system}
-        COMFORT_MULTIPLE_FIELDS[0][1] = power_window_objects
-        COMFORT_MULTIPLE_FIELDS[1][1] = steering_wheel_adjustment_objects
-        COMFORT_MULTIPLE_FIELDS[2][1] = parking_assistance_system_objects
+        COMFORT_MULTIPLE_FIELDS[0][1]['fields'] = power_window_objects
+        COMFORT_MULTIPLE_FIELDS[1][1]['fields'] = steering_wheel_adjustment_objects
+        COMFORT_MULTIPLE_FIELDS[2][1]['fields'] = parking_assistance_system_objects
 
         result = (
             ('single_fields', COMFORT_SINGLE_FIELDS),
@@ -699,9 +699,9 @@ class Option(models.Model):
         isofix_fastening_system_objects = {x.id: x.name for x in isofix_fastening_system}
         support_system = MultipleOption.objects.filter(separator_id=11)
         support_system_objects = {x.id: x.name for x in support_system}
-        SAFETY_MULTIPLE_FIELDS[0][1] = airbag_objects
-        SAFETY_MULTIPLE_FIELDS[1][1] = isofix_fastening_system_objects
-        SAFETY_MULTIPLE_FIELDS[2][1] = support_system_objects
+        SAFETY_MULTIPLE_FIELDS[0][1]['fields'] = airbag_objects
+        SAFETY_MULTIPLE_FIELDS[1][1]['fields'] = isofix_fastening_system_objects
+        SAFETY_MULTIPLE_FIELDS[2][1]['fields'] = support_system_objects
 
         result = (
             ('single_fields', SAFETY_SINGLE_FIELDS),
