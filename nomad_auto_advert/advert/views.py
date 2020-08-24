@@ -12,7 +12,7 @@ from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, C
     AdvertComplaint, AdvertComment
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
     CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer, \
-    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer, MyAdvertCommentSerializer, \
+    AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer, \
     AdvertCommentSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
@@ -154,7 +154,7 @@ class MyAdvertCommentViewSet(MultiSerializerViewSetMixin,
                            generics.RetrieveAPIView,
                            generics.ListAPIView,
                            viewsets.GenericViewSet):
-    serializer_class = MyAdvertCommentSerializer
+    serializer_class = AdvertCommentSerializer
 
     def get_queryset(self):
         return AdvertComment.objects.filter(profile=self.request.user)

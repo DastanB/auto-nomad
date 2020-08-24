@@ -176,16 +176,16 @@ class AdvertComplaintSerializer(serializers.ModelSerializer):
                   'created', 'modified')
 
 
-class MyAdvertCommentSerializer(serializers.ModelSerializer):
-    profile = serializers.SerializerMethodField()
-
-    def get_profile(self, obj: AdvertComment):
-        return obj.profile.first_name + ' ' + obj.profile.last_name
-
-    class Meta:
-        model = AdvertComment
-        read_only_fields = ('profile', )
-        fields = ('id', 'advert', 'parent', 'text') + read_only_fields
+# class MyAdvertCommentSerializer(serializers.ModelSerializer):
+#     profile = serializers.SerializerMethodField()
+#
+#     def get_profile(self, obj: AdvertComment):
+#         return obj.profile.first_name + ' ' + obj.profile.last_name
+#
+#     class Meta:
+#         model = AdvertComment
+#         read_only_fields = ('profile', 'created', 'modified', )
+#         fields = ('id', 'advert', 'parent', 'text') + read_only_fields
 
 
 class AdvertCommentSerializer(serializers.ModelSerializer):
@@ -196,8 +196,9 @@ class AdvertCommentSerializer(serializers.ModelSerializer):
         return obj.profile.first_name + ' ' + obj.profile.last_name
 
     def get_children(self, obj: AdvertComment):
-        return MyAdvertCommentSerializer(AdvertComment.objects.filter(parent=obj), many=True).data
+        return AdvertCommentSerializer(AdvertComment.objects.filter(parent=obj), many=True).data
 
     class Meta:
         model = AdvertComment
-        fields = ('__all__')
+        read_only_fields = ('profile', 'created', 'modified', 'children', )
+        fields = ('id', 'advert', 'parent', 'text') + read_only_fields
