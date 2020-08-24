@@ -6,7 +6,7 @@ class AdvertImageFilter(filters.FilterSet):
     class Meta:
         model = AdvertImage
         fields = {
-            'advert': ('exact', ),
+            'advert': ('exact',),
         }
 
 
@@ -14,7 +14,7 @@ class CarBodyStateFilter(filters.FilterSet):
     class Meta:
         model = CarBodyState
         fields = {
-            'advert': ('exact', ),
+            'advert': ('exact',),
         }
 
 
@@ -28,33 +28,36 @@ class AdvertSearchFilter(filters.FilterSet):
     year_end = filters.CharFilter(method='year_end_lte')
     price_begin = filters.CharFilter(method='price_gte')
     price_end = filters.CharFilter(method='price_lte')
-    transmission = filters.CharFilter(method='filter_by_transmission_type')             # Коробка передач
-    body = filters.CharFilter(method='filter_by_car_body_type')                         # Кузов
-    engine = filters.CharFilter(method='filter_by_engine_type')                         # Двигатель
-    engine_volume_begin = filters.CharFilter(method="engine_volume_gte")                # Объем двигателя
-    engine_volume_end = filters.CharFilter(method="engine_volume_lte")                  # Объем двигателя
-    drive_type = filters.CharFilter(method='drive_type_filter')                         # Привод машины
-    power_begin = filters.CharFilter(method='engine_power_gte')                         # Мощность л.с.
-    power_end = filters.CharFilter(method='engine_power_gte')                           # Мощность л.с.
-    mileage_begin = filters.CharFilter(method='mileage_begin_gte')                      # Пробег
-    mileage_end = filters.CharFilter(method='mileage_end_lte')                          # Пробег
+    transmission = filters.CharFilter(method='filter_by_transmission_type')  # Коробка передач
+    body = filters.CharFilter(method='filter_by_car_body_type')  # Кузов
+    engine = filters.CharFilter(method='filter_by_engine_type')  # Двигатель
+    engine_volume_begin = filters.CharFilter(method="engine_volume_gte")  # Объем двигателя
+    engine_volume_end = filters.CharFilter(method="engine_volume_lte")  # Объем двигателя
+    drive_type = filters.CharFilter(method='drive_type_filter')  # Привод машины
+    power_begin = filters.CharFilter(method='engine_power_gte')  # Мощность л.с.
+    power_end = filters.CharFilter(method='engine_power_gte')  # Мощность л.с.
+    mileage_begin = filters.CharFilter(method='mileage_begin_gte')  # Пробег
+    mileage_end = filters.CharFilter(method='mileage_end_lte')  # Пробег
     color = filters.CharFilter(method="filter_by_color")
-    trunk_volume_begin = filters.CharFilter(method='trunk_volume_gte')                  # обьем багажа литр
-    clearance_begin = filters.CharFilter(method='road_clearance_gte')                   # клиренс мм
-    acceleration_begin = filters.CharFilter(method='acceleration_gte')                  # ускорение сек
-    acceleration_end = filters.CharFilter(method='acceleration_lte')                    # ускорение сек
-    fuel_consumption_end = filters.CharFilter(method='fuel_consumption_lte')            # расход топдива
-    rule_type = filters.CharFilter(method='steering_wheel_type')                        # руль
-    max_speed_begin = filters.CharFilter(method='max_speed_gte')                        # максимальная скорость
-    max_speed_end = filters.CharFilter(method='max_speed_lte')                          # максимальная скорость
-    max_torque_begin = filters.CharFilter(method='max_torque_gte')                      # максимальный крутящий момент
-    max_torque_end = filters.CharFilter(method='max_torque_lte')                        # максимальный крутящий момент
+    trunk_volume_begin = filters.CharFilter(method='trunk_volume_gte')  # обьем багажа литр
+    clearance_begin = filters.CharFilter(method='road_clearance_gte')  # клиренс мм
+    acceleration_begin = filters.CharFilter(method='acceleration_gte')  # ускорение сек
+    acceleration_end = filters.CharFilter(method='acceleration_lte')  # ускорение сек
+    fuel_consumption_end = filters.CharFilter(method='fuel_consumption_lte')  # расход топдива
+    rule_type = filters.CharFilter(method='steering_wheel_type')  # руль
+    max_speed_begin = filters.CharFilter(method='max_speed_gte')  # максимальная скорость
+    max_speed_end = filters.CharFilter(method='max_speed_lte')  # максимальная скорость
+    max_torque_begin = filters.CharFilter(method='max_torque_gte')  # максимальный крутящий момент
+    max_torque_end = filters.CharFilter(method='max_torque_lte')  # максимальный крутящий момент
     image_filter = filters.BooleanFilter(method='filter_by_image')
-    cleared_by_customs = filters.BooleanFilter(method="filter_cleared_by_customs")      # Растоможен
-    exchange = filters.BooleanFilter(method="filter_exchange")                          # Обмен
-    condition_type = filters.NumberFilter(method="filter_condition_type")               # Состояние авто
+    cleared_by_customs = filters.BooleanFilter(method="filter_cleared_by_customs")  # Растоможен
+    exchange = filters.BooleanFilter(method="filter_exchange")  # Обмен
+    condition_type = filters.NumberFilter(method="filter_condition_type")  # Состояние авто
     city = filters.CharFilter(method='filter_by_cities')
     sort_by = filters.NumberFilter(method='sort_by_number')
+
+    options_single_fields = filters.CharFilter(method='filter_by_option_single_fields')
+    # options_choice_fields = filters.
 
     def filter_by_mark(self, queryset, value, *args, **kwargs):
         ext = args[0]
@@ -220,3 +223,8 @@ class AdvertSearchFilter(filters.FilterSet):
     def filter_by_cities(self, queryset, value, *args, **kwargs):
         cities = args[0].split(',')
         return queryset.filter(city__in=cities)
+
+    def filter_by_option_single_fields(self, queryset, value, *args, **kwargs):
+        fields = args[0].split(',')
+        data = {f'car__options__{x}': True for x in fields}
+        return queryset.filter(**data)

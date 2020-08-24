@@ -133,6 +133,9 @@ class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
         fields = "__all__"
+        extra_kwargs = {
+            'car': {'required': True}
+        }
 
 
 class OptionUpdateSerializer(OptionSerializer):
