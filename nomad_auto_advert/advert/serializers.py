@@ -176,29 +176,24 @@ class AdvertComplaintSerializer(serializers.ModelSerializer):
                   'created', 'modified')
 
 
-# class MyAdvertCommentSerializer(serializers.ModelSerializer):
-#     profile = serializers.SerializerMethodField()
-#
-#     def get_profile(self, obj: AdvertComment):
-#         return obj.profile.first_name + ' ' + obj.profile.last_name
-#
-#     class Meta:
-#         model = AdvertComment
-#         read_only_fields = ('profile', 'created', 'modified', )
-#         fields = ('id', 'advert', 'parent', 'text') + read_only_fields
+class RecursiveField(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
 
 
-class AdvertCommentSerializer(serializers.ModelSerializer):
-    children = serializers.SerializerMethodField()
+class AdvertCommentBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AdvertComment
+        read_only_fields = ('profile', 'created', 'modified', )
+        fields = ('id', 'advert', 'parent', 'text') + read_only_fields
+
+
+class AdvertCommentSerializer(AdvertCommentBaseSerializer):
+    parent = AdvertCommentBaseSerializer()
     profile = serializers.SerializerMethodField()
 
     def get_profile(self, obj: AdvertComment):
         return obj.profile.first_name + ' ' + obj.profile.last_name
 
-    def get_children(self, obj: AdvertComment):
-        return AdvertCommentSerializer(AdvertComment.objects.filter(parent=obj), many=True).data
 
-    class Meta:
-        model = AdvertComment
-        read_only_fields = ('profile', 'created', 'modified', 'children', )
-        fields = ('id', 'advert', 'parent', 'text') + read_only_fields

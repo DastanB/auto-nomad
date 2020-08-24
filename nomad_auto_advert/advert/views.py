@@ -13,7 +13,7 @@ from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, C
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
     CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer, \
     AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer, \
-    AdvertCommentSerializer
+    AdvertCommentSerializer, AdvertCommentBaseSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
@@ -154,7 +154,7 @@ class MyAdvertCommentViewSet(MultiSerializerViewSetMixin,
                            generics.RetrieveAPIView,
                            generics.ListAPIView,
                            viewsets.GenericViewSet):
-    serializer_class = AdvertCommentSerializer
+    serializer_class = AdvertCommentBaseSerializer
 
     def get_queryset(self):
         return AdvertComment.objects.filter(profile=self.request.user)
@@ -168,4 +168,4 @@ class AdvertCommentView(generics.ListAPIView):
 
     def get_queryset(self):
         return AdvertComment.objects.prefetch_related('profile')\
-            .filter(advert=self.kwargs.get('advert_pk'), parent__isnull=True)
+            .filter(advert=self.kwargs.get('advert_pk')).order_by('created')
