@@ -1,3 +1,5 @@
+import json
+
 from django_filters import rest_framework as filters
 from nomad_auto_advert.advert.models import AdvertImage, CarBodyState
 
@@ -57,7 +59,8 @@ class AdvertSearchFilter(filters.FilterSet):
     sort_by = filters.NumberFilter(method='sort_by_number')
 
     options_single_fields = filters.CharFilter(method='filter_by_option_single_fields')
-    # options_choice_fields = filters.
+    options_choice_fields = filters.CharFilter(method='filter_by_option_choice_fields')
+    # options_multiple_fields = filters.CharFilter(method='filter_by_option_multiple_fields')
 
     def filter_by_mark(self, queryset, value, *args, **kwargs):
         ext = args[0]
@@ -228,3 +231,13 @@ class AdvertSearchFilter(filters.FilterSet):
         fields = args[0].split(',')
         data = {f'car__options__{x}': True for x in fields}
         return queryset.filter(**data)
+
+    def filter_by_option_choice_fields(self, queryset, value, *args, **kwargs):
+        fields = args[0].split(',')
+        data = {f'car__options__{field.split("=")[0]}': field.split("=")[1] for field in fields}
+        return queryset.filter(**data)
+
+    # def filter_by_option_multiple_fields(self, queryset, value, *args, **kwargs):
+    #     fields = args[0].split(',')
+    #     data = {f'car__options__{field.split("=")[0]}__in': field.split("=")[1].split('-') for field in fields}
+    #     return queryset.filter(**data)
