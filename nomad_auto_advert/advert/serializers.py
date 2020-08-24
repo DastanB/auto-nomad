@@ -176,12 +176,6 @@ class AdvertComplaintSerializer(serializers.ModelSerializer):
                   'created', 'modified')
 
 
-class RecursiveField(serializers.Serializer):
-    def to_representation(self, value):
-        serializer = self.parent.parent.__class__(value, context=self.context)
-        return serializer.data
-
-
 class AdvertCommentBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdvertComment
@@ -189,11 +183,14 @@ class AdvertCommentBaseSerializer(serializers.ModelSerializer):
         fields = ('id', 'advert', 'parent', 'text') + read_only_fields
 
 
-class AdvertCommentSerializer(AdvertCommentBaseSerializer):
-    parent = AdvertCommentBaseSerializer()
+class AdvertCommentParentSerializer(AdvertCommentBaseSerializer):
     profile = serializers.SerializerMethodField()
 
     def get_profile(self, obj: AdvertComment):
         return obj.profile.first_name + ' ' + obj.profile.last_name
+
+
+class AdvertCommentSerializer(AdvertCommentParentSerializer):
+    parent = AdvertCommentParentSerializer()
 
 
