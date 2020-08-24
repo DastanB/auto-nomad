@@ -130,43 +130,30 @@ class MultipleOptionSerializer(serializers.ModelSerializer):
 
 
 class OptionSerializer(serializers.ModelSerializer):
-    electric_heating = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=1)
-    )
-    seat_electric_adjustment = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=2)
-    )
-    heated_seat = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=3)
-    )
-    seat_ventilation = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=4)
-    )
-    suspension = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=5)
-    )
-    power_window = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=6)
-    )
-    steering_wheel_adjustment = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=7)
-    )
-    parking_assistance_system = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=8)
-    )
-    airbag = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=9)
-    )
-    isofix_fastening_system = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=10)
-    )
-    support_system = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=MultipleOption.objects.filter(separator_id=11)
-    )
-
     class Meta:
         model = Option
         fields = "__all__"
+
+
+class OptionUpdateSerializer(OptionSerializer):
+    class Meta(OptionSerializer.Meta):
+        extra_kwargs = {
+            'car': {'read_only': True}
+        }
+
+
+class OptionReadSerializer(OptionSerializer):
+    electric_heating = MultipleOptionSerializer(many=True)
+    seat_electric_adjustment = MultipleOptionSerializer(many=True)
+    heated_seat = MultipleOptionSerializer(many=True)
+    seat_ventilation = MultipleOptionSerializer(many=True)
+    suspension = MultipleOptionSerializer(many=True)
+    power_window = MultipleOptionSerializer(many=True)
+    steering_wheel_adjustment = MultipleOptionSerializer(many=True)
+    parking_assistance_system = MultipleOptionSerializer(many=True)
+    airbag = MultipleOptionSerializer(many=True)
+    isofix_fastening_system = MultipleOptionSerializer(many=True)
+    support_system = MultipleOptionSerializer(many=True)
 
 
 class CarCreateSerializer(serializers.ModelSerializer):

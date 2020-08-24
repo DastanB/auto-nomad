@@ -14,8 +14,10 @@ from nomad_auto_advert.cars.serializers import CarTypeSerializer, CarMarkSeriali
     CarGenerationSerializer, CarSerieSerializer, CarModificationSerializer, CarCharacteristicSerializer, \
     CarCharacteristicValueSerializer, CarOptionSerializer, CarOptionValueSerializer, CarEquipmentSerializer, \
     CarSerializer, CarDetailSerializer, CarColorSerializer, MultipleOptionSerializer, OptionSerializer, \
-    CarCreateSerializer
+    CarCreateSerializer, OptionReadSerializer, OptionUpdateSerializer
 from django_filters import rest_framework as filters
+
+from nomad_auto_advert.utils.serializers import MultiSerializerViewSetMixin
 
 
 class CarView(generics.ListAPIView):
@@ -127,12 +129,16 @@ class MultipleOptionView(generics.ListAPIView):
     queryset = MultipleOption.objects.all()
 
 
-class CustomOptionViewSet(viewsets.ModelViewSet):
-    serializer_class = OptionSerializer
+class CustomOptionViewSet(MultiSerializerViewSetMixin,
+                          viewsets.ModelViewSet):
     queryset = Option.objects.all()
-
-    def get_queryset(self):
-        return Option.objects.filter(car__profile=self.request.user)
+    serializer_action_classes = {
+        'list': OptionReadSerializer,
+        'retrieve': OptionReadSerializer,
+        'create': OptionSerializer,
+        'update': OptionUpdateSerializer,
+        'partial_update': OptionUpdateSerializer
+    }
 
 
 class CustomOptionListView(APIView):

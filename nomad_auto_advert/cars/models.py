@@ -378,7 +378,8 @@ class Option(models.Model):
 
     electric_heating = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='electric_heating'
+        related_name='electric_heating',
+        blank=True
     )
 
     daytime_running_lights = models.BooleanField('Дневные ходовые огни', default=False)
@@ -426,7 +427,8 @@ class Option(models.Model):
 
     seat_electric_adjustment = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='seat_electric_adjustments'
+        related_name='seat_electric_adjustments',
+        blank=True
     )
 
     seat_position_memory = models.PositiveSmallIntegerField(
@@ -437,12 +439,14 @@ class Option(models.Model):
 
     heated_seat = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='heated_seats'
+        related_name='heated_seats',
+        blank=True
     )
 
     seat_ventilation = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='seats_ventilation'
+        related_name='seats_ventilation',
+        blank=True
     )
 
     front_sport_seats = models.BooleanField('Спортивные передние сиденья', default=False)
@@ -474,7 +478,8 @@ class Option(models.Model):
 
     suspension = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='suspensions'
+        related_name='suspensions',
+        blank=True
     )
 
     spare_wheel = models.PositiveSmallIntegerField(
@@ -523,7 +528,8 @@ class Option(models.Model):
 
     power_window = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='power_windows'
+        related_name='power_windows',
+        blank=True
     )
 
     conditioner = models.PositiveSmallIntegerField(
@@ -540,17 +546,20 @@ class Option(models.Model):
 
     steering_wheel_adjustment = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='steering_wheel_adjustments'
+        related_name='steering_wheel_adjustments',
+        blank=True
     )
 
     cruise_control = models.PositiveSmallIntegerField(
         'Круиз-контроль',
         choices=CRUISE_CONTROL_TYPES,
+        null=True
     )
 
     parking_assistance_system = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='parking_assistance_systems'
+        related_name='parking_assistance_systems',
+        blank=True
     )
 
     camera = models.PositiveSmallIntegerField(
@@ -580,17 +589,20 @@ class Option(models.Model):
 
     airbag = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='airbags'
+        related_name='airbags',
+        blank=True
     )
 
     isofix_fastening_system = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='isofix_fastening_systems'
+        related_name='isofix_fastening_systems',
+        blank=True
     )
 
     support_system = models.ManyToManyField(
         to='cars.MultipleOption',
-        related_name='support_systems'
+        related_name='support_systems',
+        blank=True
     )
 
     abs = models.BooleanField('Антиблокировочная система (ABS)', default=False)
