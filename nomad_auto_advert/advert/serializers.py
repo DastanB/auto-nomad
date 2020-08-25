@@ -110,7 +110,7 @@ class AdvertSerializer(AdvertBaseSerializer):
     contact_phones = ContactPhoneSerializer(many=True)
 
     def get_in_fav(self, obj: Advert):
-        return getattr(obj, "in_fav")
+        return getattr(obj, "in_fav", None)
 
     def get_images(self, obj: Advert):
         return AdvertImageSerializer(obj.advert_images.all(), many=True).data

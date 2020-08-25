@@ -13,7 +13,7 @@ from nomad_auto_advert.advert.models import Advert, AdvertImage, CarBodyState, C
 from nomad_auto_advert.advert.serializers import AdvertSerializer, AdvertImageSerializer, CarBodyStateSerializer, \
     CarBodySerializer, CarBodyStateReadSerializer, AdvertUpdateSerializer, AdvertBaseSerializer, \
     AdvertFavouriteBaseSerializer, AdvertFavouriteSerializer, AdvertComplaintSerializer, \
-    AdvertCommentSerializer, AdvertCommentBaseSerializer
+    AdvertCommentSerializer, AdvertCommentBaseSerializer, AdvertCommentParentSerializer
 from nomad_auto_advert.utils.mixins import MultiSerializerViewSetMixin
 
 
@@ -170,6 +170,8 @@ class MyAdvertCommentViewSet(MultiSerializerViewSetMixin,
 
         data = serializer.data
         data['profile'] = self.request.user.first_name + " " + self.request.user.last_name
+        if data.get('parent'):
+            data['parent'] = AdvertCommentParentSerializer(AdvertComment.objects.get(id=data.get('id')).parent).data
 
         return Response(data, status=status.HTTP_201_CREATED, headers=headers)
 

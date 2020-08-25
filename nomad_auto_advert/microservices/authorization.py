@@ -61,9 +61,10 @@ class CapsTokenAuthentication(BaseAuthentication):
             'city': str(response_data.get('city').get('id')) if response_data.get('city') else ''
         }
 
-        if Profile.objects.filter(user_ext=id).exists():
-            profile = Profile.objects.get(user_ext=id)
+        profile = Profile.objects.filter(user_ext=id).first()
+        if profile is not None:
             not_synced_fields = [x for x in data.keys() if data[x] != getattr(profile, x)]
+
             if len(not_synced_fields):
                 print(f'not_synced_fields: {not_synced_fields}')
                 for f in not_synced_fields:
