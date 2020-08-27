@@ -20,3 +20,12 @@ class ContactPhoneSerializer(serializers.ModelSerializer):
         model = ContactPhone
         read_only_fields = ('profile', )
         fields = ('id', 'phone', ) + read_only_fields
+
+    def create(self, validated_data):
+        phone = ContactPhone.objects.filter(
+            phone=validated_data.get('phone'),
+            profile=self.context.get('request').user
+        ).first()
+        if phone is not None:
+            return phone
+        return super().create(validated_data)
