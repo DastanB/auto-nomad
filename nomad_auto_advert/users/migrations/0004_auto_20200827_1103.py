@@ -3,6 +3,11 @@
 from django.db import migrations
 
 
+def delete_contact_phones(apps, schema_editor):
+    ContactPhone = apps.get_model("users", "ContactPhone")
+    ContactPhone.objects.all().delete()
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +15,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(delete_contact_phones),
         migrations.AlterUniqueTogether(
             name='contactphone',
             unique_together={('profile', 'phone')},

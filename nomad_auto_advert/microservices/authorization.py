@@ -86,6 +86,7 @@ class CapsTokenAuthentication(BaseAuthentication):
                 profile = Profile.objects.get(**data)
         setattr(profile, 'is_authenticated', True)
 
+        # TODO optimize this process (mb to make it celery task)
         set_phone_number(profile)
 
         return profile, key
