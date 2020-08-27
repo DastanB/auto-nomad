@@ -123,4 +123,6 @@ def make_car_custom_options_json(options):
                         for i in range(m2m_options.count()):
                             result['Безопасность'].append({field_name: m2m_options.all()[i].name})
 
-    return result
+    sections = [(key, result[key]) for key in result]
+
+    return sections

@@ -147,7 +147,7 @@ class CustomOptionViewSet(MultiSerializerViewSetMixin,
         options = Option.objects.filter(car=self.kwargs.get('car_pk')).first()
         if options is not None:
             result = make_car_custom_options_json(options)
-            return Response(result)
+            return Response({'result': result})
         return Response({'message': 'not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
