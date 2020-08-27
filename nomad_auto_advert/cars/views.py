@@ -106,6 +106,7 @@ class CarViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = Car.objects.all().order_by('id')
         return queryset
 
+
 class CarDetailView(generics.RetrieveAPIView):
     serializer_class = CarDetailSerializer
 
@@ -139,6 +140,15 @@ class CustomOptionViewSet(MultiSerializerViewSetMixin,
         'update': OptionUpdateSerializer,
         'partial_update': OptionUpdateSerializer
     }
+    lookup_url_kwarg = 'car_pk'
+    lookup_field = 'car'
+
+    def retrieve(self, request, *args, **kwargs):
+        options = Option.objects.filter(car=self.kwargs.get('car_pk')).first()
+        if options is not None:
+            result = make_car_custom_options_json(options)
+            return Response(result)
+        return Response({'message': 'not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class CustomOptionListView(APIView):
@@ -156,17 +166,6 @@ class CustomOptionListView(APIView):
             ('Безопасность', Option.get_safety_fields())
         )
         return Response(result)
-
-
-class CarCustomOptionsView(APIView):
-    permission_classes = (AllowAny, )
-
-    def get(self, request, *args, **kwargs):
-        options = Option.objects.filter(car=self.kwargs.get('car_id')).first()
-        if options is not None:
-            result = make_car_custom_options_json(options)
-            return Response(result)
-        return Response({'message': 'not found.'}, status=status.HTTP_404_NOT_FOUND)
 
 
 class CarCreateView(generics.CreateAPIView):
