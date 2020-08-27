@@ -1,8 +1,15 @@
+import logging
+from django.db import IntegrityError
+
 from rest_framework import exceptions, status
 from rest_framework.authentication import BaseAuthentication, get_authorization_header
 
 from nomad_auto_advert.microservices.models import Service
+from nomad_auto_advert.microservices.utils import set_phone_number
 from nomad_auto_advert.users.models import Profile
+
+
+logger = logging.getLogger(__name__)
 
 
 class CapsTokenAuthentication(BaseAuthentication):
@@ -71,8 +78,15 @@ class CapsTokenAuthentication(BaseAuthentication):
                     setattr(profile, f, data[f])
                 profile.save()
         else:
-            profile = Profile.objects.create(**data)
+            try:
+                profile = Profile.objects.create(**data)
+
+            except IntegrityError as exception:
+                logger.error(exception)
+                profile = Profile.objects.get(**data)
         setattr(profile, 'is_authenticated', True)
+
+        set_phone_number(profile)
 
         return profile, key
 

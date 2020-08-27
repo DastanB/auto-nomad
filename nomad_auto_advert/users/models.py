@@ -67,3 +67,6 @@ class ContactPhone(models.Model):
 
     def __str__(self):
         return f"{self.id} {self.phone}"
+
+    class Meta:
+        unique_together = ('profile', 'phone', )

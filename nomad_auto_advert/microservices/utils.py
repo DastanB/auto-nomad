@@ -11,7 +11,7 @@ from nomad_auto_advert.cars.models import (
     CarModification,
     CarEquipment
 )
-
+from nomad_auto_advert.users.models import ContactPhone
 
 logger = logging.getLogger(__name__)
 
@@ -54,3 +54,9 @@ def get_service(name: str):
             logger.exception(exception)
             return
     return
+
+
+def set_phone_number(profile):
+    contact_phone = ContactPhone.objects.filter(profile=profile, phone=profile.phone).first()
+    if contact_phone is None:
+        ContactPhone.objects.create(profile=profile, phone=profile.phone)
