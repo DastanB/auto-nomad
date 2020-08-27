@@ -24,7 +24,6 @@ class AdvertImageSerializer(serializers.ModelSerializer):
 
 
 class AdvertBaseSerializer(serializers.ModelSerializer):
-    contact_phones = ContactPhoneSerializer(required=False, many=True)
 
     class Meta:
         model = Advert
@@ -107,7 +106,7 @@ class AdvertSerializer(AdvertBaseSerializer):
     city = CitySerializer(read_only=True)
     images = serializers.SerializerMethodField()
     in_fav = serializers.SerializerMethodField()
-    contact_phones = ContactPhoneSerializer(many=True)
+    contact_phones = ContactPhoneSerializer(required=False, many=True)
 
     def get_in_fav(self, obj: Advert):
         return getattr(obj, "in_fav", None)
