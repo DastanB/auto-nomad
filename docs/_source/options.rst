@@ -25,4 +25,11 @@ All options are taken from auto.ru_
     | If it's *multiple field*, then give **array** of *multiple options*
     |
 
+- ``/api/cars/custom-options/{car_pk}/``
+    **[GET]**
+
+    | Use to get options in readable format of a specific car
+    | ``{car_pk}`` = ID of a car
+    |
+
 .. _auto.ru : https://auto.ru
