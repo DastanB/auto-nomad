@@ -181,4 +181,4 @@ class AdvertCommentView(generics.ListAPIView):
 
     def get_queryset(self):
         return AdvertComment.objects.prefetch_related('profile')\
-            .filter(advert=self.kwargs.get('advert_pk')).order_by('created')
+            .filter(advert=self.kwargs.get('advert_pk')).order_by('-created')
