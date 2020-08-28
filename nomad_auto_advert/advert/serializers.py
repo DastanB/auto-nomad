@@ -124,7 +124,7 @@ class AdvertUpdateSerializer(serializers.ModelSerializer):
         model = Advert
         fields = ('id', 'car_condition_type', 'cleared_by_customs',
                   'city', 'contact_name', 'contact_email', 'contact_phones',
-                  'price', 'exchange', 'to_order', 'rule_type', 'description',)
+                  'price', 'exchange', 'to_order', 'rule_type', 'description', 'is_archived', )
 
 
 class CarBodySerializer(serializers.ModelSerializer):

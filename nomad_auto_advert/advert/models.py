@@ -19,8 +19,8 @@ from nomad_auto_advert.microservices.models import Service
 
 class AdvertManager(models.Manager):
     def get_queryset(self):
-        return super().get_queryset()\
-            .prefetch_related('advert_images', 'advert_phones')
+        qs = super().get_queryset().prefetch_related('advert_images', 'advert_phones')
+        return qs
 
 
 class Advert(models.Model):
@@ -96,9 +96,22 @@ class Advert(models.Model):
         default=LEFT
     )
 
+    CREATED, MODERATION, ACTIVE, BLOCKED = 1, 2, 3, 4
+    STATUSES = (
+        (CREATED, 'created'),
+        (MODERATION, 'moderation'),
+        (ACTIVE, 'active'),
+        (BLOCKED, 'blocked'),
+    )
+    status = models.PositiveSmallIntegerField(choices=STATUSES, default=CREATED)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     views_count = models.PositiveIntegerField(default=0)
+
+    is_hidden = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
 
     def increment_views_count(self):
         self.views_count = self.views_count + 1
