@@ -32,7 +32,7 @@ class AdvertBaseSerializer(serializers.ModelSerializer):
                  ('car_ext', 'car',
                   'car_condition_type', 'cleared_by_customs', 'city',
                   'contact_name', 'contact_email', 'contact_phones', 'price',
-                  'exchange', 'to_order', 'rule_type', 'description',)
+                  'exchange', 'to_order', 'rule_type', 'description', 'status',)
         extra_kwargs = {
             'car': {'required': False}
         }
@@ -124,7 +124,7 @@ class AdvertUpdateSerializer(serializers.ModelSerializer):
         model = Advert
         fields = ('id', 'car_condition_type', 'cleared_by_customs',
                   'city', 'contact_name', 'contact_email', 'contact_phones',
-                  'price', 'exchange', 'to_order', 'rule_type', 'description', 'is_archived', )
+                  'price', 'exchange', 'to_order', 'rule_type', 'description', 'status', )
 
 
 class CarBodySerializer(serializers.ModelSerializer):

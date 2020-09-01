@@ -96,12 +96,11 @@ class Advert(models.Model):
         default=LEFT
     )
 
-    CREATED, MODERATION, ACTIVE, BLOCKED = 1, 2, 3, 4
+    CREATED, ACTIVE, ARCHIVED = 1, 2, 3
     STATUSES = (
         (CREATED, 'created'),
-        (MODERATION, 'moderation'),
         (ACTIVE, 'active'),
-        (BLOCKED, 'blocked'),
+        (ARCHIVED, 'archived'),
     )
     status = models.PositiveSmallIntegerField(choices=STATUSES, default=CREATED)
 
@@ -109,8 +108,9 @@ class Advert(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     views_count = models.PositiveIntegerField(default=0)
 
+    in_moderation = models.BooleanField(default=False)
     is_hidden = models.BooleanField(default=False)
-    is_archived = models.BooleanField(default=False)
+    is_blocked = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
 
     def increment_views_count(self):

@@ -59,11 +59,13 @@ class AdvertSearchFilter(filters.FilterSet):
     exchange = filters.BooleanFilter(method="filter_exchange")  # Обмен
     condition_type = filters.NumberFilter(method="filter_condition_type")  # Состояние авто
     city = filters.CharFilter(method='filter_by_cities')
-    sort_by = filters.NumberFilter(method='sort_by_number')
 
+    sort_by = filters.NumberFilter(method='sort_by_number')
     options_single_fields = filters.CharFilter(method='filter_by_option_single_fields')
     options_choice_fields = filters.CharFilter(method='filter_by_option_choice_fields')
     options_multiple_fields = filters.CharFilter(method='filter_by_option_multiple_fields')
+
+    mark_exclude = filters.CharFilter(method='exclude_mark')
 
     def filter_by_mark(self, queryset, value, *args, **kwargs):
         ext = args[0]
@@ -248,8 +250,11 @@ class AdvertSearchFilter(filters.FilterSet):
 
         for i in range(len(multiple_options)):
             for j in range(len(multiple_option_ids[i])):
-                kw = {}
-                kw[f'car__options__{multiple_options[i]}'] = multiple_option_ids[i][j]
+                kw = {f'car__options__{multiple_options[i]}': multiple_option_ids[i][j]}
                 queryset = queryset.filter(**kw)
 
         return queryset
+
+    def exclude_mark(self, queryset, value, *args, **kwargs):
+        mark_ext_s = args[0].split(',')
+        return queryset.exclude(car__car_mark__ext__in=mark_ext_s)

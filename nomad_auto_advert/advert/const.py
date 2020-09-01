@@ -8,6 +8,12 @@ ADVERT_CREATE_DESCRIPTION = """
     Rule Types:
         0 = (RIGHT, 'Справа')
         1 = (LEFT, 'Слева')
+
+    STATUSES = (
+        (CREATED, 'created'),
+        (ACTIVE, 'active'),
+        (ARCHIVED, 'archived'),
+    )
 """
 
 ADVERT_SORTING_DESCRIPTION = """

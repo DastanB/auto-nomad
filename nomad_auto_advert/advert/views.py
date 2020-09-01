@@ -44,7 +44,7 @@ class AdvertViewSet(MultiSerializerViewSetMixin,
             'car__car_mark', 'car__car_model', 'car__car_generation', 'car__car_serie', 'car__car_modification'
         ).prefetch_related('favourites')
 
-        # qs = qs.exclude(is_hidden=True, is_deleted=True)
+        # qs = qs.exclude(is_hidden=True, is_deleted=True, is_blocked=True)
         qs = qs.annotate(in_fav=Exists(users_favourites.filter(advert=OuterRef('id'))))
 
         return qs
@@ -99,7 +99,7 @@ class AdvertSearchView(viewsets.ReadOnlyModelViewSet):
             'car__car_mark', 'car__car_model', 'car__car_generation', 'car__car_serie', 'car__car_modification'
         ).prefetch_related('favourites')
 
-        # qs = qs.filter(status=Advert.ACTIVE).exclude(is_hidden=True, is_archived=True, is_deleted=True)
+        # qs = qs.filter(status=Advert.ACTIVE).exclude(is_hidden=True, is_blocked=True, is_deleted=True)
         qs = qs.annotate(in_fav=Exists(users_favourites.filter(advert=OuterRef('id'))))
 
         return qs
@@ -158,10 +158,10 @@ class AdvertComplaintViewSet(MultiSerializerViewSetMixin,
 
 
 class MyAdvertCommentViewSet(MultiSerializerViewSetMixin,
-                           generics.CreateAPIView,
-                           generics.RetrieveAPIView,
-                           generics.ListAPIView,
-                           viewsets.GenericViewSet):
+                             generics.CreateAPIView,
+                             generics.RetrieveAPIView,
+                             generics.ListAPIView,
+                             viewsets.GenericViewSet):
     serializer_class = AdvertCommentBaseSerializer
 
     def get_queryset(self):
