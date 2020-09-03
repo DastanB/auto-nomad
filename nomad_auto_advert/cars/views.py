@@ -1,8 +1,10 @@
+from django.db.models import Subquery, OuterRef, Count
 from rest_framework import generics, viewsets, exceptions, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from nomad_auto_advert.advert.models import Advert
 from nomad_auto_advert.advert.utils import make_car_custom_options_json
 from nomad_auto_advert.cars.filters import CarMarkFilter, CarModelFilter, CarGenerationFilter, CarSerieFilter, \
     CarModificationFilter, CarCharacteristicFilter, CarCharacteristicValueFilter, CarOptionValueFilter, CarOptionFilter, \
@@ -41,11 +43,23 @@ class CarMarkView(CarView):
     queryset = CarMark.objects.all()
     filterset_class = CarMarkFilter
 
+    def get_queryset(self):
+        sq = Advert.objects.filter(car__car_mark_id=OuterRef('pk'))\
+            .values('id').annotate(count=Count('id')).values('count')
+        sq.query.group_by = []
+        return self.queryset.annotate(count=Subquery(sq)).order_by('id')
+
 
 class CarModelView(CarView):
     serializer_class = CarModelSerializer
     queryset = CarModel.objects.all()
     filterset_class = CarModelFilter
+
+    def get_queryset(self):
+        sq = Advert.objects.filter(car__car_model_id=OuterRef('pk'))\
+            .values('id').annotate(count=Count('id')).values('count')
+        sq.query.group_by = []
+        return self.queryset.annotate(count=Subquery(sq)).order_by('id')
 
 
 class CarGenerationView(CarView):

@@ -5,9 +5,14 @@ from nomad_auto_advert.cars.models import CarModel, CarMark, CarGeneration, CarS
 
 class CarMarkFilter(filters.FilterSet):
     mark_name = filters.CharFilter(method='search_by_name')
+    sort_by = filters.CharFilter(method='sort_by_fields')
 
-    @staticmethod
-    def search_by_name(queryset, value, *args, **kwargs):
+    def sort_by_fields(self, queryset, value, *args, **kwargs):
+        fields = args[0].split(',')
+        if 'top' in fields:
+            return queryset.order_by('-count')
+
+    def search_by_name(self, queryset, value, *args, **kwargs):
         mark = args[0]
         return queryset.filter(name__istartswith=mark)
 
@@ -15,14 +20,18 @@ class CarMarkFilter(filters.FilterSet):
 class CarModelFilter(filters.FilterSet):
     model_name = filters.CharFilter(method='search_by_name')
     mark_id = filters.NumberFilter(method='search_by_mark_id')
+    sort_by = filters.CharFilter(method='sort_by_fields')
 
-    @staticmethod
-    def search_by_name(queryset, value, *args, **kwargs):
+    def sort_by_fields(self, queryset, value, *args, **kwargs):
+        fields = args[0].split(',')
+        if 'top' in fields:
+            return queryset.order_by('-count')
+
+    def search_by_name(self, queryset, value, *args, **kwargs):
         model = args[0]
         return queryset.filter(name__istartswith=model)
 
-    @staticmethod
-    def search_by_mark_id(queryset, value, *args, **kwargs):
+    def search_by_mark_id(self, queryset, value, *args, **kwargs):
         mark_id = args[0]
         return queryset.filter(car_mark_id=mark_id)
 
